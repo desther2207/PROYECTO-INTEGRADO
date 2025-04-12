@@ -63,17 +63,6 @@
                     </label>
                 </div>
 
-                @if (Laravel\Jetstream\Jetstream::hasTermsAndPrivacyPolicyFeature())
-                <div class="flex items-center mt-4">
-                    <x-checkbox name="terms" id="terms" class="text-green-500" required />
-                    <label for="terms" class="ml-2 text-white text-sm">
-                        {!! __('Acepto los :términos_de_servicio y la :política_de_privacidad', [
-                            'términos_de_servicio' => '<a href="'.route('terms.show').'" class="text-green-300 hover:text-green-500 underline">'.__('términos de servicio').'</a>',
-                            'política_de_privacidad' => '<a href="'.route('policy.show').'" class="text-green-300 hover:text-green-500 underline">'.__('política de privacidad').'</a>',
-                        ]) !!}
-                    </label>
-                </div>
-            @endif
 
                 <div class="flex items-center justify-between mt-6">
                     @if (Route::has('password.request'))

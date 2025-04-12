@@ -38,9 +38,11 @@
                 }
             </style>
         </head>
+        @if (Auth::user()->role == 'editor')
+        <!-- Encabezado con título y botón para crear torneo SOLO CUANDO SEA EDITOR EL USUARIO -->
         <div class="flex justify-between items-center mt-4">
             <h2 class="font-oswald-italic text-3xl">MIS TORNEOS</h2>
-            <a href="{{ route('tournaments.index') }}" class="text-blue-500 hover:text-blue-700">Ver todos</a>
+            <a href="{{ route('tournaments') }}" class="text-blue-500 hover:text-blue-700">Ver todos</a>
         </div>
 
         <div id="carouselExample" class="relative container mx-auto mt-8">
@@ -63,6 +65,8 @@
                     @endforeach
                 </div>
             </div>
+        @endif
+
 
             <!-- Controls -->
             <button onclick="prevSlide()" class="absolute top-1/2 left-0 transform -translate-y-1/2 bg-gray-600 text-white p-2 rounded-full">

@@ -15,7 +15,7 @@
                     <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')" class="text-white hover:text-green-500">
                         {{ __('Inicio') }}
                     </x-nav-link>
-                    <x-nav-link href=" {{ route('tournaments.index') }}" class="text-white hover:text-green-500">
+                    <x-nav-link href=" {{ route('tournaments') }}" class="text-white hover:text-green-500">
                         {{ __('Torneos') }}
                     </x-nav-link>
                     <x-nav-link href="#" class="text-white hover:text-green-500">

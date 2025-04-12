@@ -15,31 +15,7 @@ class TournamentController extends Controller
 
     public function index(Request $request)
     {
-        $query = Tournament::query();
 
-        if ($request->filled('q')) {
-            $query->where('tournament_name', 'like', '%' . $request->q . '%');
-        }
-
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        if ($request->filled('level')) {
-            $query->where('level', $request->level);
-        }
-
-        if ($request->filled('start_date')) {
-            $query->whereDate('start_date', '>=', $request->start_date);
-        }
-
-        if ($request->filled('end_date')) {
-            $query->whereDate('end_date', '<=', $request->end_date);
-        }
-
-        $tournaments = $query->get();
-
-        return view('tournaments.index', compact('tournaments'));
     }
 
 
