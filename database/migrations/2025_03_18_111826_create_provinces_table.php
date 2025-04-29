@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('venues', function (Blueprint $table) {
+        Schema::create('provinces', function (Blueprint $table) {
             $table->id();
-            $table->string('venue_name');
-            $table->string('address');
-            $table->foreignId('province_id')->constrained()->onDelete('cascade');
-            $table->integer('num_courts');
+            $table->string('province_name')->unique();
+            $table->string('color')->default('#000000');
             $table->timestamps();
         });
     }
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('venues');
+        Schema::dropIfExists('provinces');
     }
 };

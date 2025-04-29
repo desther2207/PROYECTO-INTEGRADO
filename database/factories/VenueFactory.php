@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Province;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,6 +20,8 @@ class VenueFactory extends Factory
         return [
             'venue_name' => fake()->randomElement(['Pechina', 'Viator', 'Benahadux', 'Huercal']),
             'num_courts' => fake()->numberBetween(1, 10),
+            'province_id' => Province::all()->random()->id,
+            'address' => fake()->address(),
         ];
     }
 }

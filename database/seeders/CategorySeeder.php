@@ -14,9 +14,9 @@ class CategorySeeder extends Seeder
     public function run(): void
     {
         $values = [
-            'Oro' => '#FFD700',
-            'Plata' => '#C0C0C0',
-            'Bronce' => '#CD7F32'
+            'Primera' => '#FFD700',
+            'Segunda' => '#C0C0C0',
+            'Tercera' => '#CD7F32'
         ];
         
         foreach ($values as $category_name => $category_color) {

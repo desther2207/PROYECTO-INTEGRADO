@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Province;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -28,9 +29,9 @@ class TournamentFactory extends Factory
             'cartel'=>'images/tournaments/carteles/'.fake()->picsum('public/storage/images/tournaments/carteles', 480,  640, false),
             'tournament_name' => fake()->sentence(4),
             'description' => fake()->text(),
+            'province_id' => Province::all()->random()->id,
             'incription_price' => fake()->randomFloat(2, 1, 999),
-            'level' => fake()->randomElement(['primera', 'segunda', 'tercera', 'cuarta']),
-            'status' => fake()->randomElement(['inscripcion', 'en curso', 'finalizado']),
+            'status' => fake()->randomElement(['pendiente', 'inscripcion', 'en curso', 'finalizado']),
             'inscription_start_date' => $start->format('Y-m-d'),
             'inscription_end_date' => $end->format('Y-m-d'),
             'start_date' => $start->format('Y-m-d'),

@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pairs', function (Blueprint $table) {
+        Schema::create('pair_unavailabilities', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('player_1_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignId('player_2_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('pair_id')->constrained()->onDelete('cascade');
+            $table->dateTime('start_unavailable');
+            $table->dateTime('end_unavailable');
             $table->timestamps();
         });
     }
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pairs');
+        Schema::dropIfExists('pair_unavailabilities');
     }
 };

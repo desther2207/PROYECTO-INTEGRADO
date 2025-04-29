@@ -1,6 +1,8 @@
 import defaultTheme from 'tailwindcss/defaultTheme';
 import forms from '@tailwindcss/forms';
 import typography from '@tailwindcss/typography';
+import daisyui from 'daisyui';
+import scrollbar from 'tailwind-scrollbar'
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -19,5 +21,15 @@ export default {
         },
     },
 
-    plugins: [forms, typography],
+    daisyui: {
+        styled: true,
+        themes: ["dark", "light"], // o los que tú uses
+        base: true,
+        utils: true,
+        logs: false,
+        rtl: false,
+        prefix: "",
+    },
+
+    plugins: [forms, typography, daisyui, scrollbar],
 };

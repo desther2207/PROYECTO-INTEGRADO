@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Province;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\WithFileUploads;
@@ -13,37 +14,39 @@ class ShowTournaments extends Component
 
     public $texto = '';
     public $status = '';
-    public $level = '';
-    public $start_date = '';
-    public $end_date = '';
+    public $province_id = '';
+    public $inscription_price_min = '';
+    public $inscription_price_max = '';
 
     public function render()
     {
-        $query = Tournament::selectRaw("*, datediff(end_date, start_date) as duracion");
+        $query = Tournament::with('province')
+            ->selectRaw("*, datediff(end_date, start_date) as duracion");
 
         if ($this->texto) {
             $query->where(function ($q) {
                 $q->where('tournament_name', 'like', '%' . $this->texto . '%')
-                  ->orWhere('description', 'like', '%' . $this->texto . '%');
+                    ->orWhere('description', 'like', '%' . $this->texto . '%');
             });
         }
-
-        // Filtros adicionales
+        // Filtro por estado
         if ($this->status) {
             $query->where('status', $this->status);
         }
-        if ($this->level) {
-            $query->where('level', $this->level);
-        }
-        if ($this->start_date) {
-            $query->whereDate('start_date', '>=', $this->start_date);
-        }
-        if ($this->end_date) {
-            $query->whereDate('end_date', '<=', $this->end_date);
+
+        // Filtro por provincia
+        if ($this->province_id) {
+            $query->where('province_id', $this->province_id);
         }
 
         $tournaments = $query->paginate(6);
+        $provinces = Province::orderBy('province_name')->get();
 
-        return view('livewire.show-tournaments', compact('tournaments'));
+        return view('livewire.show-tournaments', compact('tournaments', 'provinces'));
+    }
+
+    public function updatingTexto()
+    {
+        $this->resetPage();
     }
 }

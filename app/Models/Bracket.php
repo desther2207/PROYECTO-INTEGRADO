@@ -14,15 +14,26 @@ class Bracket extends Model
 
     protected $fillable = ['tournament_id', 'category_id', 'status', 'type'];
 
-    public function tournament():BelongsTo{
+    public function tournament(): BelongsTo
+    {
         return $this->belongsTo(Tournament::class);
     }
 
-    public function category():BelongsTo{
+    public function category(): BelongsTo
+    {
         return $this->belongsTo(Category::class);
     }
 
-    public function games():HasMany{
+    public function games(): HasMany
+    {
         return $this->hasMany(Game::class);
+    }
+
+    public function getPairsFromBracket(Bracket $bracket)
+    {
+        return $bracket->category->pairs()
+            ->where('tournament_id', $bracket->tournament_id)
+            ->inRandomOrder()
+            ->get();
     }
 }

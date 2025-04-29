@@ -13,7 +13,7 @@ class Pair extends Model
     /** @use HasFactory<\Database\Factories\PairFactory> */
     use HasFactory;
 
-    protected $fillable = ['player_1_id', 'player_2_id'];
+    protected $fillable = ['player_1_id', 'player_2_id', 'tournament_id', 'invite_code', 'status', 'paid',];
 
     public function categories():BelongsToMany{
         return $this->belongsToMany(Category::class);
@@ -35,5 +35,9 @@ class Pair extends Model
 
     public function gamesAsSecondPair():HasMany{
         return $this->hasMany(Game::class, 'pair_two_id');
+    }
+
+    public function tournament():BelongsTo{
+        return $this->belongsTo(Tournament::class);
     }
 }

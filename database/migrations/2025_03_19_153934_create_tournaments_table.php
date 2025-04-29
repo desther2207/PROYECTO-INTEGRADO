@@ -14,12 +14,12 @@ return new class extends Migration
         Schema::create('tournaments', function (Blueprint $table) {
             $table->id();
             $table->string('tournament_image')->nullable();
-            $table->string('cartel');
+            $table->string('cartel')->nullable();
             $table->string('tournament_name');
             $table->string('description');
+            $table->foreignId('province_id')->constrained()->onDelete('cascade');
             $table->decimal('incription_price', 5, 2);
-            $table->enum('level', ['primera', 'segunda', 'tercera', 'cuarta']);
-            $table->enum('status', ['inscripcion', 'en curso', 'finalizado']);
+            $table->enum('status', ['pendiente', 'inscripcion', 'en curso', 'finalizado'])->default('pendiente');
             $table->date('inscription_start_date')->nullable(); //Fecha de inicio de inscripción
             $table->date('inscription_end_date')->nullable(); //Fecha de fin de inscripción
             $table->date('start_date');

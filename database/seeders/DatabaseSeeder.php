@@ -22,12 +22,12 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         User::factory(10)->create();
+        
+        $this->call(ProvinceSeeder::class);
 
         Venue::factory(10)->create();
 
         $this->call(CategorySeeder::class);
-
-        $this->call(PairSeeder::class);
 
         Court::factory(10)->create();
 
@@ -37,12 +37,14 @@ class DatabaseSeeder extends Seeder
         Storage::makeDirectory('images/tournaments');
         Storage::makeDirectory('images/tournaments/carteles');
 
+        
         $this->call(TournamentSeeder::class);
+
+        $this->call(PairSeeder::class);
+
 
         Bracket::factory(10)->create();
         Game::factory(10)->create();
         Payment::factory(10)->create();
-
-        //IMPORTANTE, TODO: A cada relacion N:M, un seeder con el attach y el pluck de los HUEVOS.
     }
 }
