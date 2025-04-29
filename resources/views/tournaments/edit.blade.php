@@ -124,11 +124,11 @@
                                     <div id="banner-placeholder" class="text-center w-full">
                                         <img src="{{Storage::url($tournament->tournament_image)}}">
                                         <div class="mt-4 flex text-sm text-gray-400 justify-center">
-                                            <label for="banner" class="relative cursor-pointer rounded-md bg-gray-800 font-semibold text-indigo-400 focus-within:ring-2 focus-within:ring-indigo-400 focus-within:ring-offset-2 hover:text-indigo-300">
+                                            <label for="tournament_image" class="relative cursor-pointer rounded-md bg-gray-800 font-semibold text-indigo-400 focus-within:ring-2 focus-within:ring-indigo-400 focus-within:ring-offset-2 hover:text-indigo-300">
                                                 <span>Sube un archivo</span>
                                                 <input
-                                                    id="banner"
-                                                    name="banner"
+                                                    id="tournament_image"
+                                                    name="tournament_image"
                                                     type="file"
                                                     accept="image/*"
                                                     class="sr-only"
