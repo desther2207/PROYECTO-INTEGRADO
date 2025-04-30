@@ -33,6 +33,9 @@ Route::middleware([
 
     Route::post('/brackets/{bracket}/generate-games', [BracketController::class, 'generateGames'])->name('brackets.generateGames');
 
+    Route::get('/tournaments/{tournament}/cuadros', [TournamentController::class, 'cuadros'])->name('tournaments.cuadros');
+
+
 });
 
 

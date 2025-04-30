@@ -140,7 +140,7 @@
                         </div>
                         @else
                         <!-- Estado pendiente -->
-                                                 <!-- Inscripciones abiertas -->
+                        <!-- Inscripciones abiertas -->
                         <h2 class="text-xl font-semibold mb-2">Inscripciones</h2>
                         <div class="-mx-4">
                             <hr class="my-2">
@@ -162,6 +162,14 @@
                             ${{ number_format($tournament->incription_price, 2) }}
                         </p>
                         @endif
+
+                        <div class="mt-6">
+                            <a
+                                href="{{ route('tournaments.cuadros', $tournament) }}"
+                                class="block text-center bg-indigo-600 text-white font-bold py-2 px-4 rounded hover:bg-indigo-700">
+                                Ver cuadros del torneo
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>

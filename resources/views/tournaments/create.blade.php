@@ -191,18 +191,7 @@
                         <p class="mt-1 text-sm text-gray-400">Indique las fechas de inscripción y de juego del torneo, así como cuántas parejas jugarán.</p>
 
                         <div class="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-8">
-                            <!-- Rango de fechas del torneo (izquierda) -->
-                            <div>
-                                <label for="tournament-range" class="block text-sm font-medium text-white">Fechas del torneo</label>
-                                <p class="mt-1 text-sm text-gray-400">Selecciona el rango de fechas para el torneo.</p>
-                                <!-- Este input de rango usa Flatpickr en modo range -->
-                                <input id="tournament-range" name="tournament-range" type="text" placeholder="Selecciona rango de fechas"
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white">
-                                <!-- Párrafo para mostrar el rango seleccionado para el torneo -->
-                                <p id="selectedTournamentRange" class="mt-2 text-sm text-gray-400"></p>
-                            </div>
-
-                            <!-- Rango de fechas del periodo de inscripción (derecha) -->
+                            <!-- Rango de fechas del periodo de inscripción (izquierda) -->
                             <div>
                                 <label for="registration-range" class="block text-sm font-medium text-white">Fechas del periodo de inscripción</label>
                                 <p class="mt-1 text-sm text-gray-400">Selecciona el rango de fechas para el período de inscripción.</p>
@@ -214,23 +203,27 @@
                             </div>
                         </div>
 
+                        <!-- Rango de fechas del torneo (derecha) -->
+                        <div>
+                            <label for="tournament-range" class="block text-sm font-medium text-white">Fechas del torneo</label>
+                            <p class="mt-1 text-sm text-gray-400">Selecciona el rango de fechas para el torneo.</p>
+                            <!-- Este input de rango usa Flatpickr en modo range -->
+                            <input id="tournament-range" name="tournament-range" type="text" placeholder="Selecciona rango de fechas"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white">
+                            <!-- Párrafo para mostrar el rango seleccionado para el torneo -->
+                            <p id="selectedTournamentRange" class="mt-2 text-sm text-gray-400"></p>
+                        </div>
                         <div>
                             <label for="inscription_price" class="block text-sm font-medium text-white">Precio de inscripción</label>
                             <p class="mt-1 text-sm text-gray-400">Indica el precio de inscripción por pareja.</p>
                             <div class="mt-2">
-                                <input type="number" name="incription_price" id="incription_price" value=0 min=0  class="col-start-1 row-start-1 w-1/6 appearance-none rounded-md bg-gray-800 py-1.5 pr-8 pl-3 text-base text-white focus:outline-indigo-500 sm:text-sm">
+                                <input type="number" name="incription_price" id="incription_price" value=0 min=0 class="col-start-1 row-start-1 w-1/6 appearance-none rounded-md bg-gray-800 py-1.5 pr-8 pl-3 text-base text-white focus:outline-indigo-500 sm:text-sm">
                             </div>
                         </div>
                     </div>
 
                     <!-- Jugadores y categorias -->
                     <div class="flex flex-col sm:flex-row gap-4 border-b border-gray-700 pb-12">
-                        <div class="flex-1">
-                            <h2 class="text-base font-semibold text-white">Número de categorías</h2>
-                            <p class="mt-1 text-sm text-gray-400">Indica cuántas categorías estarán disponibles (máx. 3)</p>
-
-                            <input type="number" name="max_categories" id="max_categories" value=1 max=3 class="col-start-1 mt-4 row-start-1 w-1/6 appearance-none rounded-md bg-gray-800 py-1.5 pr-8 pl-3 text-base text-white focus:outline-indigo-500 sm:text-sm">
-                        </div>
 
                         <div class="flex-1">
                             <h2 class="text-base font-semibold text-white">Número máximo de parejas</h2>
@@ -239,6 +232,21 @@
                             <input type="number" name="max_pairs" id="max_pairs" value=4 min=4 class="col-start-1 mt-4 row-start-1 w-1/6 appearance-none rounded-md bg-gray-800 py-1.5 pr-8 pl-3 text-base text-white focus:outline-indigo-500 sm:text-sm">
                         </div>
                     </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-white mb-2">Categorías del torneo</label>
+                    <select id="categories" name="categories[]" multiple class="w-full">
+                        @foreach ($categories as $category)
+                        <option value="{{ $category->id }}"
+                            {{ in_array($category->id, old('categories', [])) ? 'selected' : '' }}>
+                            {{ $category->category_name }}
+                        </option>
+                        @endforeach
+                    </select>
+
+
+                    <p class="text-sm text-gray-400">Puedes seleccionar varias categorías.</p>
                 </div>
 
                 <!-- Botones de acción -->
@@ -260,6 +268,14 @@
             placeholder: "Seleccione una sede",
             allowClear: true,
             width: '100%'
+        });
+    });
+
+    $(document).ready(function() {
+        $('#categories').select2({
+            placeholder: "Selecciona categoría(s)",
+            width: '100%',
+            allowClear: true
         });
     });
 

@@ -191,32 +191,39 @@
                     <div class="border-b border-gray-700 pb-12">
                         <h2 class="text-base font-semibold text-white">Fechas relevantes</h2>
                         <p class="mt-1 text-sm text-gray-400">Indique las fechas de inscripción y de juego del torneo, así como cuántas parejas jugarán.</p>
-
+                        <!--Por la forma en la que trato a las fechas, necesito asignar a una variable cada una de ellas para que se muestren bien-->
                         <div class="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-8">
-                            <!-- Rango de fechas del torneo (izquierda) -->
-                            <div>
-                                <label for="tournament-range" class="block text-sm font-medium text-white">Fechas del torneo</label>
-                                <p class="mt-1 text-sm text-gray-400">Selecciona el rango de fechas para el torneo.</p>
-                                <!-- Este input de rango usa Flatpickr en modo range -->
-                                <input id="tournament-range" name="tournament-range" type="text"
-                                    value="{{ old('tournament-range', $tournament->start_date . ' a ' . $tournament->end_date) }}"
-                                    placeholder="Selecciona rango de fechas"
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white">
-                                <!-- Párrafo para mostrar el rango seleccionado para el torneo -->
-                                <p id="selectedTournamentRange" class="mt-2 text-sm text-gray-400"></p>
-                            </div>
-
-                            <!-- Rango de fechas del periodo de inscripción (derecha) -->
+                            <!-- Rango de fechas del periodo de inscripción (izquierda) -->
+                            @php
+                            $insStart = old('inscription_start_date', $tournament->inscription_start_date);
+                            $insEnd = old('inscription_end_date', $tournament->inscription_end_date);
+                            @endphp
                             <div>
                                 <label for="registration-range" class="block text-sm font-medium text-white">Fechas del periodo de inscripción</label>
                                 <p class="mt-1 text-sm text-gray-400">Selecciona el rango de fechas para el período de inscripción.</p>
                                 <!-- Este input también usa Flatpickr en modo range -->
                                 <input id="registration-range" name="registration-range" type="text"
-                                    value="{{ old('registration-range', $tournament->registration_start . ' a ' . $tournament->registration_end) }}"
+                                    value="{{ \Carbon\Carbon::parse($insStart)->format('d-m-Y') . ' a ' . \Carbon\Carbon::parse($insEnd)->format('d-m-Y') }}"
                                     placeholder="Selecciona rango de fechas"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white">
                                 <!-- Párrafo para mostrar el rango seleccionado para el período de inscripción -->
                                 <p id="selectedRegistrationRange" class="mt-2 text-sm text-gray-400"></p>
+                            </div>
+                            <!-- Rango de fechas del torneo (derecha) -->
+                            @php
+                            $tournamentStart = old('start_date', $tournament->start_date);
+                            $tournamentEnd = old('end_date', $tournament->end_date);
+                            @endphp
+                            <div>
+                                <label for="tournament-range" class="block text-sm font-medium text-white">Fechas del torneo</label>
+                                <p class="mt-1 text-sm text-gray-400">Selecciona el rango de fechas para el torneo.</p>
+                                <!-- Este input de rango usa Flatpickr en modo range -->
+                                <input id="tournament-range" name="tournament-range" type="text"
+                                    value="{{ \Carbon\Carbon::parse($tournamentStart)->format('d-m-Y') . ' a ' . \Carbon\Carbon::parse($tournamentEnd)->format('d-m-Y') }}"
+                                    placeholder="Selecciona rango de fechas"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white">
+                                <!-- Párrafo para mostrar el rango seleccionado para el torneo -->
+                                <p id="selectedTournamentRange" class="mt-2 text-sm text-gray-400"></p>
                             </div>
                         </div>
 
@@ -275,7 +282,7 @@
             provinceSelect.dispatchEvent(new Event('change'));
 
             setTimeout(() => {
-                const selectedVenues = @json(old('venue', $tournament->venues->pluck('id')->toArray()));
+                const selectedVenues = @json(old('venue', $tournament -> venues -> pluck('id') -> toArray()));
                 $('#venue').val(selectedVenues).trigger('change');
             }, 300);
         }
