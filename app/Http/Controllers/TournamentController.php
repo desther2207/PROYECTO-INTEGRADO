@@ -6,6 +6,7 @@ use App\Models\Bracket;
 use App\Models\Category;
 use App\Models\Province;
 use App\Models\Tournament;
+use App\Models\TournamentSlot;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,8 +16,13 @@ class TournamentController extends Controller
 
     public function cuadros(Tournament $tournament)
     {
-        $tournament->load('categories', 'brackets.games.pairs.players');
-
+        $tournament->load([
+            'categories',
+            'brackets.games.pairOne.playerOne',
+            'brackets.games.pairOne.playerTwo',
+            'brackets.games.pairTwo.playerOne',
+            'brackets.games.pairTwo.playerTwo'
+        ]);
         return view('tournaments.cuadros', compact('tournament'));
     }
 
@@ -158,11 +164,36 @@ class TournamentController extends Controller
 
             foreach ($selectedCategoryIds as $categoryId) {
                 foreach (['principal', 'consolacion'] as $type) {
-                    Bracket::create([
+                    $bracket = Bracket::create([
                         'tournament_id' => $tournament->id,
                         'category_id' => $categoryId,
                         'status' => 'En curso',
                         'type' => $type,
+                    ]);
+                }
+            }
+
+            // Crear los slots de disponibilidad (1 por cada día del torneo y en cada franja horaria típica de un torneo)
+            $start = Carbon::parse($tournament->start_date);
+            $end = Carbon::parse($tournament->end_date);
+
+            
+            $slots = [
+                ['start' => '09:00', 'end' => '10:30'],
+                ['start' => '10:30', 'end' => '12:00'],
+                ['start' => '12:00', 'end' => '13:30'],
+                ['start' => '17:00', 'end' => '18:30'],
+                ['start' => '18:30', 'end' => '20:00'],
+                ['start' => '20:00', 'end' => '21:30'],
+            ];
+
+            for ($date = $start; $date->lte($end); $date->addDay()) {
+                foreach ($slots as $slot) {
+                    TournamentSlot::create([
+                        'tournament_id' => $tournament->id,
+                        'slot_date' => $date->format('Y-m-d'),
+                        'start_time' => $slot['start'],
+                        'end_time' => $slot['end'],
                     ]);
                 }
             }
@@ -195,7 +226,7 @@ class TournamentController extends Controller
                 $tournament->inscription_end_date < now()->toDateString() &&
                 $bracket->games()->count() === 0
             ) {
-                app(BracketController::class)->generateGames($bracket);
+                $bracket->generateGames();
             }
         }
 

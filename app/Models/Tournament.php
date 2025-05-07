@@ -56,4 +56,8 @@ class Tournament extends Model
     public function province():BelongsTo{
         return $this->belongsTo(Province::class);
     }
+
+    public function slots():HasMany{
+        return $this->hasMany(TournamentSlot::class);
+    }
 }

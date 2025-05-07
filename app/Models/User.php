@@ -71,12 +71,18 @@ class User extends Authenticatable
         ];
     }
 
-    public function tournaments():BelongsToMany{
+    public function tournaments(): BelongsToMany
+    {
         return $this->belongsToMany(Tournament::class);
     }
 
-    public function payments():HasMany{
+    public function payments(): HasMany
+    {
         return $this->hasMany(Payment::class);
     }
 
+    public function isOrganizerOf(Tournament $tournament)
+    {
+        return $tournament->organizers->contains($this);
+    }
 }

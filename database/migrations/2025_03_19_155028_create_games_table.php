@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('games', function (Blueprint $table) {
             $table->id();
+            $table->integer('game_number')->nullable();
             $table->foreignId('bracket_id')->constrained()->cascadeOnDelete();
             /*Relación 2:N con pairs*/
             $table->foreignId('pair_one_id')->constrained('pairs')->cascadeOnDelete();

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pair;
+use App\Models\PairUnavailableSlot;
 use App\Models\Tournament;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,7 +23,8 @@ class PairController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'tournament_id' => ['required', 'exists:tournaments,id']
+            'tournament_id' => ['required', 'exists:tournaments,id'],
+            'unavailable_slots' => ['required', 'array', 'size:7'],
         ]);
 
         $pair = Pair::create([
@@ -30,6 +32,13 @@ class PairController extends Controller
             'tournament_id' => $request->tournament_id,
             'invite_code' => Str::random(32),
         ]);
+
+        foreach ($request->unavailable_slots as $slotId) {
+            PairUnavailableSlot::create([
+                'pair_id' => $pair->id,
+                'tournament_slot_id' => $slotId,
+            ]);
+        }
 
         return redirect()->route('pairs.invite', ['pair' => $pair->id])->with('success', '¡Inscripción realizada! Comparte el enlace con tu compañero.');
     }

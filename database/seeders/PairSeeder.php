@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\Category;
 use App\Models\Pair;
+use App\Models\PairUnavailableSlot;
+use App\Models\TournamentSlot;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -19,6 +21,19 @@ class PairSeeder extends Seeder
         foreach ($parejas as $pareja) {
             shuffle($ids);
             $pareja->categories()->attach($this->getRandomArrayIdTags($ids));
+
+            $tournamentSlots = TournamentSlot::where('tournament_id', $pareja->tournament_id)->pluck('id')->toArray();
+
+            if (count($tournamentSlots) >= 7) {
+                $unavailableSlots = collect($tournamentSlots)->shuffle()->take(7);
+
+                foreach ($unavailableSlots as $slotId) {
+                    PairUnavailableSlot::create([
+                        'pair_id' => $pareja->id,
+                        'tournament_slot_id' => $slotId,
+                    ]);
+                }
+            }
         }
     }
     private function getRandomArrayIdTags(array $ids): array

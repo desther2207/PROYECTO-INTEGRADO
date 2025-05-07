@@ -31,11 +31,9 @@ Route::middleware([
 
     Route::get('/sedes/by-province/{province}', [VenueController::class, 'getSedesByProvince'])->name('sedes.byProvince');
 
-    Route::post('/brackets/{bracket}/generate-games', [BracketController::class, 'generateGames'])->name('brackets.generateGames');
+    Route::post('/brackets/{bracket}/generate-games', [BracketController::class, 'generateGamesManually'])->name('brackets.generateGames');
 
     Route::get('/tournaments/{tournament}/cuadros', [TournamentController::class, 'cuadros'])->name('tournaments.cuadros');
-
-
 });
 
 

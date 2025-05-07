@@ -15,29 +15,49 @@ class Pair extends Model
 
     protected $fillable = ['player_1_id', 'player_2_id', 'tournament_id', 'invite_code', 'status', 'paid',];
 
-    public function categories():BelongsToMany{
+    public function categories(): BelongsToMany
+    {
         return $this->belongsToMany(Category::class);
     }
 
     //Al ser estas dos relaciones 2:N, la cosa cambia.
-    
-    public function playerOne():BelongsTo{
+
+    public function playerOne(): BelongsTo
+    {
         return $this->belongsTo(User::class, 'player_1_id');
     }
 
-    public function playerTwo():BelongsTo{
+    public function playerTwo(): BelongsTo
+    {
         return $this->belongsTo(User::class, 'player_2_id');
     }
 
-    public function gamesAsFirstPair():HasMany{
+    public function gamesAsFirstPair(): HasMany
+    {
         return $this->hasMany(Game::class, 'pair_one_id');
     }
 
-    public function gamesAsSecondPair():HasMany{
+    public function gamesAsSecondPair(): HasMany
+    {
         return $this->hasMany(Game::class, 'pair_two_id');
     }
 
-    public function tournament():BelongsTo{
+    public function tournament(): BelongsTo
+    {
         return $this->belongsTo(Tournament::class);
+    }
+
+    public function unavailableSlots(): BelongsToMany
+    {
+        return $this->belongsToMany(TournamentSlot::class, 'pair_unavailable_slots');
+    }
+
+
+    // Este método devuelve una colección de los jugadores de la pareja
+    // y filtra los que son nulos (es decir, los que no están asignados).
+
+    public function getPlayersAttribute()
+    {
+        return collect([$this->playerOne, $this->playerTwo])->filter();
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire;
+namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Tournament;
@@ -11,7 +11,7 @@ class BracketViewer extends Component
 
     public function mount(Tournament $tournament)
     {
-        $this->tournament->load('categories', 'brackets.games.pairs.players');
+        $this->tournament->load('categories', 'brackets.games.pairOne.playerOne', 'brackets.games.pairOne.playerTwo', 'brackets.games.pairTwo.playerOne', 'brackets.games.pairTwo.playerTwo');
     }
 
     public function render()
