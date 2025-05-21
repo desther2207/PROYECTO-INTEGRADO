@@ -1,9 +1,12 @@
 <?php
 
 use App\Http\Controllers\BracketController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\GameController;
 use App\Http\Controllers\InicioController;
 use App\Http\Controllers\PairController;
+use App\Http\Controllers\RankingController;
 use App\Http\Controllers\TournamentController;
 use App\Http\Controllers\VenueController;
 use App\Livewire\ShowTournaments;
@@ -34,6 +37,12 @@ Route::middleware([
     Route::post('/brackets/{bracket}/generate-games', [BracketController::class, 'generateGamesManually'])->name('brackets.generateGames');
 
     Route::get('/tournaments/{tournament}/cuadros', [TournamentController::class, 'cuadros'])->name('tournaments.cuadros');
+
+    Route::post('/tournaments/{id}/reset', [TournamentController::class, 'resetTournament'])->name('tournaments.reset');
+
+    Route::get('/ranking', [RankingController::class, 'index'])->name('ranking.index');
+
+    Route::get('contacto', [ContactController::class, 'index'])->name('contacto.index');
 });
 
 

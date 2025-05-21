@@ -60,4 +60,15 @@ class Pair extends Model
     {
         return collect([$this->playerOne, $this->playerTwo])->filter();
     }
+
+    // Este método devuelve una colección de los jugadores de la pareja
+    // y filtra los que son nulos (es decir, los que no están asignados).
+    public function tournamentPairs($tournamentId)
+{
+    return $this->belongsToMany(Pair::class)
+        ->where('pairs.tournament_id', $tournamentId)
+        ->where('status', 'confirmada')
+        ->whereNotNull('player_2_id');
+}
+
 }

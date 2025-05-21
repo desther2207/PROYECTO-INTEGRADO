@@ -40,7 +40,13 @@
 
                     <input type="hidden" name="unavailable_slots" id="unavailable_slots">
 
-                    <p class="text-sm mt-2 text-gray-400">* Debes seleccionar exactamente 7 horarios no disponibles.</p>
+                    @if(session('error'))
+                    <div class="mb-4 mt-2 p-4 bg-red-900 text-red-400 rounded">
+                        {{ session('error') }}
+                    </div>
+                    @endif
+
+
                 </div>
 
 

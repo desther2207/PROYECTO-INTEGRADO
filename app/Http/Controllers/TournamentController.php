@@ -177,7 +177,7 @@ class TournamentController extends Controller
             $start = Carbon::parse($tournament->start_date);
             $end = Carbon::parse($tournament->end_date);
 
-            
+
             $slots = [
                 ['start' => '09:00', 'end' => '10:30'],
                 ['start' => '10:30', 'end' => '12:00'],
@@ -229,7 +229,6 @@ class TournamentController extends Controller
                 $bracket->generateGames();
             }
         }
-
         return view('tournaments.show', compact('tournament'));
     }
 
@@ -388,4 +387,17 @@ class TournamentController extends Controller
             'description' => ['nullable', 'string'],
         ];
     }
+
+    public function resetTournament($tournamentId)
+    {
+        $tournament = Tournament::findOrFail($tournamentId);
+    
+        foreach ($tournament->brackets as $bracket) {
+            // Borrar todos los partidos asociados al bracket
+            $bracket->games()->delete();
+        }
+    
+        return back()->with('success', 'Torneo reiniciado correctamente.');
+    }
+    
 }

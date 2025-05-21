@@ -33,7 +33,7 @@ class Tournament extends Model
         return $this->belongsToMany(User::class);
     }
 
-    public function pairs():HasMany{
+    public function tournamentPairs():HasMany{
         return $this->hasMany(Pair::class);
     }
 

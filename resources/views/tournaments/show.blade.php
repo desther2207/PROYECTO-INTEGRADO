@@ -88,7 +88,7 @@
                         $inscripcionFin = \Carbon\Carbon::parse($tournament->inscription_end_date);
                         @endphp
 
-                        @if ($tournament->status === 'inscripcion')
+                        @if ($tournament->status === 'inscripcion' && $hoy->between($inscripcionInicio, $inscripcionFin) && $tournament->current_pairs < $tournament->max_pairs)
                         <!-- Inscripciones abiertas -->
                         <h2 class="text-xl font-semibold mb-2">Inscripciones</h2>
                         <div class="-mx-4">

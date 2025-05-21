@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Log;
 
 class Bracket extends Model
 {
@@ -41,11 +42,13 @@ class Bracket extends Model
 
     public function generateGames()
     {
-        // Eliminar juegos anteriores (opcional, para pruebas limpias)
+        Log::info('Entrando en generateGames');
+
         $this->games()->delete();
 
-        // 1️⃣ Obtener parejas inscritas en esta categoría
-        $pairs = $this->category->pairs()
+        $pairs = Pair::whereHas('categories', fn($q) =>
+        $q->where('category_id', $this->category_id))
+            ->where('tournament_id', $this->tournament_id)
             ->where('status', 'confirmada')
             ->whereNotNull('player_2_id')
             ->get()
@@ -53,84 +56,116 @@ class Bracket extends Model
             ->shuffle()
             ->values();
 
+        if ($pairs->count() < 3) return false;
 
-        // Si hay menos de 3 parejas → NO generamos
-        if ($pairs->count() < 3) {
-            return false;
-        }
-
-        // 2️⃣ Añadir BYEs si es necesario
         $totalPairs = $pairs->count();
-        $nextPowerOfTwo = pow(2, ceil(log($totalPairs) / log(2)));
+        $nextPowerOfTwo = pow(2, ceil(log($totalPairs, 2)));
         $byes = $nextPowerOfTwo - $totalPairs;
 
         for ($i = 0; $i < $byes; $i++) {
             $pairs->push(null);
         }
 
-        // 3️⃣ Emparejar para la PRIMERA RONDA
+        $totalRounds = log($nextPowerOfTwo, 2);
+        $currentRound = $totalRounds;
+
         $slots = $this->tournament->slots;
-        $pistas = \App\Models\Court::all();
+        $courts = \App\Models\Court::whereIn('venue_id', $this->tournament->venues->pluck('id'))->get();
+        $usedSlots = [];
 
-        $gameNumber = 1;
+        $currentPairs = $pairs;
+        while ($currentRound > 0) {
+            $gamesInRound = 0;
+            $nextRoundPairs = collect();
 
-        for ($i = 0; $i < $pairs->count(); $i += 2) {
-
-            $pair1 = $pairs[$i];
-            $pair2 = $pairs[$i + 1];
-
-            // Si hay BYE → no se crea partido, pasa de ronda (en el futuro)
-            if ($pair1 && !$pair2) {
-                continue;
+            if ($currentPairs->count() % 2 !== 0) {
+                $currentPairs->push(null);
             }
 
-            if (!$pair1 && $pair2) {
-                continue;
-            }
+            for ($i = 0; $i < $currentPairs->count(); $i += 2) {
+                $pair1 = $currentPairs[$i];
+                $pair2 = $currentPairs[$i + 1];
 
-            // 4️⃣ Buscar slot disponible (sin conflictos)
-            $pair1Available = $pair1?->unavailableSlots ? $slots->whereNotIn('id', $pair1->unavailableSlots->pluck('tournament_slot_id'))->pluck('id')->toArray() : $slots->pluck('id')->toArray();
-            $pair2Available = $pair2?->unavailableSlots ? $slots->whereNotIn('id', $pair2->unavailableSlots->pluck('tournament_slot_id'))->pluck('id')->toArray() : $slots->pluck('id')->toArray();
+                $pairOneId = $pair1?->id;
+                $pairTwoId = $pair2?->id;
+                $venueId = null;
+                $courtId = null;
+                $start = null;
+                $end = null;
 
-            $commonSlots = array_intersect($pair1Available, $pair2Available);
+                if ($currentRound === $totalRounds && $pairOneId && $pairTwoId) {
+                    $bestSlot = null;
+                    $minConflicts = PHP_INT_MAX;
 
-            if (empty($commonSlots)) {
-                $slotId = $slots->random()->id;
-            } else {
-                $slotId = $commonSlots[array_rand($commonSlots)];
-            }
+                    foreach ($slots as $slot) {
+                        $slotDate = $slot->slot_date;
+                        $startTime = $slot->start_time;
+                        $endTime = $slot->end_time;
 
-            $slot = $slots->firstWhere('id', $slotId);
+                        foreach ($courts as $court) {
+                            $datetimeKey = $court->id . '_' . $slotDate . '_' . $startTime;
 
-            // Buscar pista disponible
-            $availableCourt = null;
+                            if (in_array($datetimeKey, $usedSlots)) continue;
 
-            foreach ($pistas as $court) {
-                $exists = \App\Models\Game::where('court_id', $court->id)
-                    ->where('start_game_date', $slot->slot_date . ' ' . $slot->start_time)
-                    ->exists();
+                            $conflicts = 0;
 
-                if (!$exists) {
-                    $availableCourt = $court;
-                    break;
+                            foreach ([$pairOneId, $pairTwoId] as $pid) {
+                                $conflicts += \App\Models\PairUnavailableSlot::where('pair_id', $pid)
+                                    ->whereHas('tournamentSlot', fn($q) =>
+                                    $q->where('slot_date', $slotDate)
+                                        ->where('start_time', $startTime))
+                                    ->count();
+                            }
+
+                            if ($conflicts < $minConflicts) {
+                                $minConflicts = $conflicts;
+                                $bestSlot = [
+                                    'court_id' => $court->id,
+                                    'venue_id' => $court->venue_id,
+                                    'start' => $slotDate . ' ' . $startTime,
+                                    'end' => $slotDate . ' ' . $endTime,
+                                    'key' => $datetimeKey
+                                ];
+
+                                if ($conflicts === 0) break 2;
+                            }
+                        }
+                    }
+
+                    if ($bestSlot) {
+                        $courtId = $bestSlot['court_id'];
+                        $venueId = $bestSlot['venue_id'];
+                        $start = $bestSlot['start'];
+                        $end = $bestSlot['end'];
+                        $usedSlots[] = $bestSlot['key'];
+                    }
+                }
+
+                \App\Models\Game::create([
+                    'bracket_id' => $this->id,
+                    'pair_one_id' => $pairOneId,
+                    'pair_two_id' => $pairTwoId,
+                    'venue_id' => $venueId,
+                    'court_id' => $courtId,
+                    'start_game_date' => $start,
+                    'end_game_date' => $end,
+                    'result' => null,
+                    'game_number' => ++$gamesInRound,
+                    'round_number' => $currentRound,
+                ]);
+
+                // Para las siguientes rondas
+                if ($pair1 && !$pair2) {
+                    $nextRoundPairs->push($pair1);
+                } elseif (!$pair1 && $pair2) {
+                    $nextRoundPairs->push($pair2);
+                } else {
+                    $nextRoundPairs->push(null);
                 }
             }
 
-            $courtId = $availableCourt?->id;
-            $venueId = $availableCourt?->venue_id;
-
-            // 5️⃣ Crear partido
-            \App\Models\Game::create([
-                'bracket_id' => $this->id,
-                'pair_one_id' => $pair1->id,
-                'pair_two_id' => $pair2->id,
-                'venue_id' => $venueId,
-                'court_id' => $courtId,
-                'start_game_date' => $slot->slot_date . ' ' . $slot->start_time,
-                'end_game_date' => $slot->slot_date . ' ' . $slot->end_time,
-                'result' => '', // pendiente
-                'game_number' => $gameNumber++,
-            ]);
+            $currentPairs = $nextRoundPairs;
+            $currentRound--;
         }
     }
 }

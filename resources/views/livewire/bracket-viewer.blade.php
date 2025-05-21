@@ -1,76 +1,297 @@
 <div class="space-y-8">
-    @foreach ($tournament->categories as $category)
-    <div class="text-white">
-        <h2 class="text-2xl font-semibold text-indigo-400 mb-2">{{ $category->category_name }}</h2>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            @foreach (['principal' => 'Principal', 'consolacion' => 'Consolación'] as $type => $label)
+    {{-- MENSAJE DE GANADOR --}}
+    @if (session('success'))
+    <div class="bg-green-200 text-green-900 font-semibold px-4 py-2 rounded mb-4">
+        {{ session('success') }}
+    </div>
+    @endif
+
+    {{-- SELECTOR DE CUADROS --}}
+    <div class="flex flex-wrap space-x-4 mb-6">
+        @foreach ($tournament->categories as $category)
+        @foreach (["principal" => "Principal", "consolacion" => "Consolación"] as $type => $label)
+        <button
+            class="px-4 py-2 rounded bg-indigo-600 text-white hover:bg-indigo-500 mb-2"
+            wire:click="$set('selectedBracket', '{{ $category->id }}-{{ $type }}')">
+            {{ $category->category_name }} - {{ $label }}
+        </button>
+        @endforeach
+        @endforeach
+    </div>
+
+    {{-- VISOR DE CUADROS --}}
+    @foreach ($tournament->categories as $category)
+    @foreach (["principal" => "Principal", "consolacion" => "Consolación"] as $type => $label)
+    @php
+    $bracket = $tournament->brackets->where('category_id', $category->id)->where('type', $type)->first();
+    @endphp
+
+    @if ($selectedBracket === $category->id . '-' . $type)
+    <div class="text-white">
+        <h2 class="text-2xl font-semibold text-indigo-400 mb-4">
+            {{ $category->category_name }} - {{ $label }}
+        </h2>
+
+        <div class="bg-gradient-to-r from-blue-900 to-blue-600 p-6 rounded shadow space-y-12">
+
+            {{-- BOTONES DE GESTIÓN --}}
+            @if ($bracket && $bracket->games->count() === 0 && auth()->user()?->isOrganizerOf($tournament) && $tournament->tournamentPairs()->where('status', 'confirmada')->whereNotNull('player_2_id')->count() >= 3)
+            <form action="{{ route('brackets.generateGames', $bracket) }}" method="POST" class="inline-block mb-4">
+                @csrf
+                <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-500">
+                    Generar partidos manualmente
+                </button>
+            </form>
+            @elseif($bracket)
+            <form action="{{ route('brackets.generateGames', $bracket) }}" method="POST" class="inline-block mb-4">
+                @csrf
+                <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-500">
+                    Volver a generar partidos manualmente
+                </button>
+            </form>
+            @endif
+
+            @if (auth()->user()?->isOrganizerOf($tournament))
+            <form action="{{ route('tournaments.reset', $tournament->id) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que quieres reiniciar el torneo?');">
+                @csrf
+                <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-500">
+                    Reiniciar torneo
+                </button>
+            </form>
+            @endif
+
+            {{-- PARTIDOS --}}
+            @if ($bracket && $bracket->games->count())
             @php
-            $bracket = $tournament->brackets->where('category_id', $category->id)->where('type', $type)->first();
+            $rounds = [];
+
+            $totalRounds = $bracket->games->max('round_number');
+
+            $roundLabels = [
+            1 => 'Final',
+            2 => 'Semifinales',
+            3 => 'Cuartos',
+            4 => 'Octavos',
+            5 => 'Dieciseisavos',
+            6 => 'Treintadosavos',
+            7 => 'Sesentaycuatroavos',
+            ];
+
+            foreach ($bracket->games as $game) {
+            $label = $roundLabels[$game->round_number] ?? 'Ronda ' . $game->round_number;
+            $rounds[$game->round_number]['label'] = $label;
+            $rounds[$game->round_number]['games'][] = $game;
+            }
+
+            // Ahora ordenamos por número de ronda descendente → primera ronda a la izquierda
+            krsort($rounds);
+
             @endphp
 
-            <div class="bg-gray-800 p-4 rounded-md shadow">
-                <h3 class="text-lg text-white font-bold mb-2">{{ $label }}</h3>
+            <div class="grid gap-8" style="grid-template-columns: repeat({{ count($rounds) }}, 1fr);">
+                @foreach ($rounds as $round)
+                <div class="space-y-6">
+                    <h3 class="text-center text-lg font-bold uppercase">{{ $round['label'] }}</h3>
 
+                    @foreach ($round['games'] as $game)
+                    @php
+                    $pairOne = $game->pairOne;
+                    $pairTwo = $game->pairTwo;
 
-                @if ($bracket && $bracket->games->count() === 0 && auth()->user()?->isOrganizerOf($tournament) && $tournament->pairs()->where('status', 'confirmada')->whereNotNull('player_2_id')->count() >= 3)
+                    $pairOneName = $pairOne && $pairOne->playerOne && $pairOne->playerTwo
+                    ? "{$pairOne->playerOne->name} y {$pairOne->playerTwo->name}"
+                    : 'Por definir';
 
-                <form action="{{ route('brackets.generateGames', $bracket) }}" method="POST" class="inline-block">
-                    @csrf
-                    <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-500 mb-4">
-                        Generar partidos manualmente
-                    </button>
-                </form>
+                    $pairTwoName = $pairTwo && $pairTwo->playerOne && $pairTwo->playerTwo
+                    ? "{$pairTwo->playerOne->name} y {$pairTwo->playerTwo->name}"
+                    : 'Por definir';
 
-                @endif
+                    $sets = [];
+                    if ($game->result) {
+                    foreach (explode(',', $game->result) as $set) {
+                    [$s1, $s2] = array_map('trim', explode('-', $set));
+                    $sets[] = ['one' => $s1, 'two' => $s2];
+                    }
+                    }
+                    while (count($sets) < 3) {
+                        $sets[]=['one'=> '', 'two' => ''];
+                        }
 
+                        // Estado visual
+                        $estado = 'gris';
+                        if ($game->pair_one_id && $game->pair_two_id && $game->result) {
+                        $estado = 'verde';
+                        } elseif ($game->pair_one_id && $game->pair_two_id) {
+                        $estado = 'amarillo';
+                        }
 
-                @if ($bracket && $bracket->games->count())
-                <ul class="text-white space-y-2 text-sm">
-                    @foreach ($bracket->games as $game)
-                    <li class="border-b border-gray-700 pb-2">
-                        <strong>Partido</strong>:
+                        $bgColor = match($estado) {
+                        'verde' => 'bg-green-100',
+                        'amarillo' => 'bg-yellow-100',
+                        default => 'bg-gray-100'
+                        };
+                        @endphp
 
-                        {{-- Mostrar pareja 1 --}}
-                        @if ($game->pair_one_id)
-                        {{ optional($game->pairOne->playerOne)->name ?? 'TBD' }}
-                        y
-                        {{ optional($game->pairOne->playerTwo)->name ?? 'TBD' }}
-                        @else
-                        <span class="italic text-gray-400">BYE</span>
-                        @endif
+                        <div class="{{ $bgColor }} text-gray-900 rounded-md shadow px-4 py-2">
+                            <form wire:submit.prevent="reportResult({{ $game->id }})">
+                                @csrf
+                                <div class="grid grid-cols-2 items-center">
+                                    <p class="font-semibold">{{ $pairOneName }}</p>
+                                    <div class="flex justify-end gap-2">
+                                        @foreach ($sets as $i => $set)
+                                        @if (auth()->user()?->isOrganizerOf($tournament) && $bgColor == 'bg-yellow-100')
+                                        <input type="number"
+                                            wire:model.defer="sets.{{ $game->id }}.{{ $i }}.one"
+                                            class="w-10 text-center border rounded no-spinner"
+                                            min="0" max="99" />
+                                        @else
+                                        <span class="w-10 text-center">{{ $set['one'] !== '' ? $set['one'] : '-' }}</span>
+                                        @endif
+                                        @endforeach
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-2 items-center mt-1">
+                                    <p class="font-semibold">{{ $pairTwoName }}</p>
+                                    <div class="flex justify-end gap-2">
+                                        @foreach ($sets as $i => $set)
+                                        @if (auth()->user()?->isOrganizerOf($tournament) && $bgColor == 'bg-yellow-100')
+                                        <input type="number"
+                                            wire:model.defer="sets.{{ $game->id }}.{{ $i }}.two"
+                                            class="w-10 text-center border rounded no-spinner"
+                                            min="0" max="99" /> @else
+                                        <span class="w-10 text-center">{{ $set['two'] !== '' ? $set['two'] : '-' }}</span>
+                                        @endif
+                                        @endforeach
+                                    </div>
+                                </div>
+                                <div class="text-sm text-gray-600 mt-2 space-y-1">
+                                    <p><strong>Fecha:</strong> {{ $game->start_game_date ?? 'Por asignar' }}</p>
+                                    <p><strong>Sede:</strong> {{ $game->venue->venue_name ?? 'Por asignar' }}</p>
+                                    <p><strong>Pista:</strong> {{ $game->court->nombre ?? 'Por asignar' }}</p>
+                                </div>
 
-                        vs
+                                @if (auth()->user()?->isOrganizerOf($tournament) && $game->pair_one_id && $game->pair_two_id && $bgColor == 'bg-yellow-100')
+                                <button type="submit" class="mt-2 px-3 py-1 bg-indigo-600 text-white text-sm rounded hover:bg-indigo-500">
+                                    Guardar resultado
+                                </button>
+                                @endif
+                            </form>
 
-                        {{-- Mostrar pareja 2 --}}
-                        @if ($game->pair_two_id)
-                        {{ optional($game->pairTwo->playerOne)->name ?? 'TBD' }}
-                        y
-                        {{ optional($game->pairTwo->playerTwo)->name ?? 'TBD' }}
-                        @else
-                        <span class="italic text-gray-400">BYE</span>
-                        @endif
-
-                        {{-- Info extra --}}
-                        @if($game->court || $game->start_game_date)
-                        <div class="text-gray-400 mt-1 text-xs">
-                            @if($game->court)
-                            Pista: {{ $game->court->nombre ?? 'Sin asignar' }}
+                            @if (auth()->user()?->isOrganizerOf($tournament) && $game->pair_one_id && $game->pair_two_id && $bgColor == 'bg-yellow-100')
+                            <button type="button" wire:click="startEdit({{ $game->id }})"
+                                class="mt-2 px-3 py-1 bg-gray-600 text-white text-sm rounded hover:bg-gray-500">
+                                Editar
+                            </button>
                             @endif
-                            @if($game->start_game_date)
-                            - Hora: {{ \Carbon\Carbon::parse($game->start_game_date)->format('H:i') }}
+
+                            @if ($editingGameId === $game->id)
+                            <div class="mt-4 space-y-3 text-sm">
+
+                                @php
+                                $pairs = \App\Models\Pair::where('tournament_id', $tournament->id)
+                                ->whereHas('categories', fn($q) => $q->where('category_id', $category->id))
+                                ->where('status', 'confirmada')
+                                ->whereNotNull('player_2_id')
+                                ->get();
+                                @endphp
+                                {{-- Pareja 1 --}}
+                                <div>
+                                    <label class="block mb-1">Pareja 1</label>
+                                    <select wire:model="editData.{{ $game->id }}.pair_one_id" class="w-full rounded">
+                                        @foreach ($pairs as $pair)
+                                        <option value="{{ $pair->id }}">
+                                            {{ $pair->playerOne->name }} y {{ $pair->playerTwo->name }}
+                                        </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                {{-- Pareja 2 --}}
+                                <div>
+                                    <label class="block mb-1">Pareja 2</label>
+                                    <select wire:model="editData.{{ $game->id }}.pair_two_id" class="w-full rounded">
+                                        @foreach ($pairs as $pair)
+                                        <option value="{{ $pair->id }}">
+                                            {{ $pair->playerOne->name }} y {{ $pair->playerTwo->name }}
+                                        </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                {{-- Fecha y hora --}}
+                                <div>
+                                    <label class="block mb-1">Fecha y hora</label>
+                                    <input type="datetime-local" wire:model="editData.{{ $game->id }}.start_game_date"
+                                        class="w-full rounded" />
+                                </div>
+
+                                {{-- Sede --}}
+                                <div>
+                                    <label class="block mb-1">Sede</label>
+                                    <select wire:model="editData.{{ $game->id }}.venue_id"
+                                        wire:change="loadCourts({{ $game->id }})" class="w-full rounded">
+                                        @foreach ($venues as $venue)
+                                        <option value="{{ $venue->id }}">{{ $venue->venue_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                {{-- Pista --}}
+                                <div>
+                                    <label class="block mb-1">Pista</label>
+                                    <select wire:model="editData.{{ $game->id }}.court_id" class="w-full rounded">
+                                        @foreach ($availableCourts[$game->id] ?? [] as $court)
+                                        <option value="{{ $court->id }}">{{ $court->nombre }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                {{-- Guardar --}}
+                                <form wire:submit.prevent="saveEdit({{ $game->id }})">
+                                    <button type="submit"
+                                        class="mt-2 px-3 py-1 bg-green-600 text-white rounded hover:bg-green-500">
+                                        Guardar cambios
+                                    </button>
+                                    @error("editData.$game->id.pair_one_id") <div class="text-red-400 text-xs">{{ $message }}</div> @enderror
+                                    @error("editData.$game->id.pair_two_id") <div class="text-red-400 text-xs">{{ $message }}</div> @enderror
+                                    @error("editData.$game->id.start_game_date") <div class="text-red-400 text-xs">{{ $message }}</div> @enderror
+                                    @error("editData.$game->id.venue_id") <div class="text-red-400 text-xs">{{ $message }}</div> @enderror
+                                    @error("editData.$game->id.court_id") <div class="text-red-400 text-xs">{{ $message }}</div> @enderror
+
+                                </form>
+                            </div>
                             @endif
                         </div>
-                        @endif
-                    </li>
-                    @endforeach
-                </ul>
-                @else
-                <p class="text-gray-400 italic">No hay partidos generados.</p>
-                @endif
+                        @endforeach
+                </div>
+                @endforeach
             </div>
-            @endforeach
+            @else
+            <p class="text-gray-400 italic">No hay partidos generados.</p>
+            @endif
         </div>
     </div>
+    @endif
     @endforeach
+    @endforeach
+
+    <style>
+        input[type=number].no-spinner::-webkit-inner-spin-button,
+        input[type=number].no-spinner::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type=number].no-spinner {
+            -moz-appearance: textfield;
+        }
+
+        .space-y-6 {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+    </style>
+
 </div>

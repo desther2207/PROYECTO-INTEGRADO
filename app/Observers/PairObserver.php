@@ -15,7 +15,7 @@ class PairObserver
         $tournament = $pair->tournament;
 
         // ✅ Actualizar current_pairs
-        $confirmedPairs = $tournament->pairs()
+        $confirmedPairs = $tournament->tournamentPairs()
             ->whereNotNull('player_2_id')
             ->where('status', 'confirmada')
             ->count();
@@ -57,7 +57,7 @@ class PairObserver
         $tournament = $pair->tournament;
 
         // ✅ Actualizar current_pairs al eliminar
-        $confirmedPairs = $tournament->pairs()
+        $confirmedPairs = $tournament->tournamentPairs()
             ->whereNotNull('player_2_id')
             ->where('status', 'confirmada')
             ->count();

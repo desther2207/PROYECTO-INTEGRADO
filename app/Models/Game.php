@@ -11,7 +11,7 @@ class Game extends Model
     /** @use HasFactory<\Database\Factories\GameFactory> */
     use HasFactory;
 
-    protected $fillable = ['game_number','bracket_id', 'pair_one_id', 'pair_two_id', 'court_id', 'venue_id', 'start_game_date', 'end_game_date', 'result'];
+    protected $fillable = ['game_number', 'round_number','bracket_id', 'pair_one_id', 'pair_two_id', 'court_id', 'venue_id', 'start_game_date', 'end_game_date', 'result'];
 
     public function bracket():BelongsTo{
         return $this->belongsTo(Bracket::class);
