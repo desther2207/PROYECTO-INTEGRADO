@@ -18,10 +18,10 @@
                     <x-nav-link href=" {{ route('tournaments') }}" class="text-white hover:text-green-500">
                         {{ __('Torneos') }}
                     </x-nav-link>
-                    <x-nav-link href="#" class="text-white hover:text-green-500">
-                        {{ __('Resultados') }}
+                    <x-nav-link href="{{ route('ranking.index') }}" class="text-white hover:text-green-500">
+                        {{ __('Ranking') }}
                     </x-nav-link>
-                    <x-nav-link href="#" class="text-white hover:text-green-500">
+                    <x-nav-link href=" {{ route('contacto.index') }}" class="text-white hover:text-green-500">
                         {{ __('Contacto') }}
                     </x-nav-link>
                 </div>
@@ -85,16 +85,16 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden bg-gray-800">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')" class="text-white hover:text-green-500">
-                {{ __('Dashboard') }}
+            <x-responsive-nav-link href="{{ route('dashboard') }}" class="text-white hover:text-green-500">
+                {{ __('Inicio') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link href="#" class="text-white hover:text-green-500">
+            <x-responsive-nav-link href="{{ route('tournaments') }}" class="text-white hover:text-green-500">
                 {{ __('Torneos') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link href="#" class="text-white hover:text-green-500">
-                {{ __('Resultados') }}
+            <x-responsive-nav-link href="{{ route('ranking.index') }}" class="text-white hover:text-green-500">
+                {{ __('Ranking') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link href="#" class="text-white hover:text-green-500">
+            <x-responsive-nav-link href="{{ route('contacto.index') }}" class="text-white hover:text-green-500">
                 {{ __('Contacto') }}
             </x-responsive-nav-link>
         </div>

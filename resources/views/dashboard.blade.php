@@ -5,15 +5,12 @@
             <title>Inicio</title>
         </head>
 
-        {{-- Fondo de partículas --}}
-        <div id="particles-js" class="fixed top-0 left-0 w-full h-full -z-10"></div>
-
         {{-- ====== CARDS PRINCIPALES GRANDES CON EFECTOS ====== --}}
         <div class="px-6 pt-6 flex items-start justify-center">
-            <div class="grid grid-cols-3 gap-10 max-w-[1600px] w-full">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-screen-xl w-full px-4 mx-auto">
 
                 <a href="{{ route('tournaments') }}"
-                    class="row-span-2 group rounded-3xl shadow-2xl relative overflow-hidden transform transition-all duration-500 min-h-[420px] bg-white/10 backdrop-blur-md hover:scale-[1.05] hover:bg-white/80"
+                    class="lg:row-span-2 group rounded-3xl shadow-xl relative overflow-hidden transition-all duration-500 bg-white/10 backdrop-blur-md hover:scale-105 hover:bg-white/80 min-h-[280px] sm:min-h-[320px] lg:min-h-[420px]"
                     data-aos="fade-left"
                     data-aos-duration="1000"
                     data-aos-easing="ease-in-out"
@@ -39,7 +36,7 @@
 
                 <!-- Ranking -->
                 <a href="{{ route('ranking.index') }}"
-                    class="group rounded-3xl shadow-2xl relative overflow-hidden transform transition-all duration-500 min-h-[200px] bg-white/10 backdrop-blur-md hover:scale-[1.05] hover:bg-white/80"
+                    class="group rounded-3xl shadow-xl relative overflow-hidden transition-all duration-500 bg-white/10 backdrop-blur-md hover:scale-105 hover:bg-white/80 min-h-[180px] sm:min-h-[200px]"
                     data-aos="fade-down"
                     data-aos-duration="1000"
                     data-aos-easing="ease-in-out"
@@ -63,7 +60,7 @@
 
                 <!-- Contacto -->
                 <a href="{{ route('contacto.index') }}"
-                    class="group rounded-3xl shadow-2xl relative overflow-hidden transform transition-all duration-500 min-h-[200px] bg-white/10 backdrop-blur-md hover:scale-[1.05] hover:bg-white/80"
+                    class="group rounded-3xl shadow-xl relative overflow-hidden transition-all duration-500 bg-white/10 backdrop-blur-md hover:scale-105 hover:bg-white/80 min-h-[180px] sm:min-h-[200px]"
                     data-aos="fade-right"
                     data-aos-duration="1000"
                     data-aos-easing="ease-in-out"
@@ -89,7 +86,7 @@
                 @if (Auth::user()->role == 'editor' || Auth::user()->role == 'admin')
 
                 <a href="{{ route('tournaments.create') }}"
-                    class="col-span-2 group rounded-3xl shadow-2xl relative overflow-hidden transform transition-all duration-500 min-h-[200px] bg-white/10 backdrop-blur-md hover:scale-[1.05] hover:bg-white/80"
+                    class="lg:col-span-2 group rounded-3xl shadow-xl relative overflow-hidden transition-all duration-500 bg-white/10 backdrop-blur-md hover:scale-105 hover:bg-white/80 min-h-[180px] sm:min-h-[200px]"
                     data-aos="fade-up"
                     data-aos-duration="1000"
                     data-aos-easing="ease-in-out"
@@ -111,7 +108,7 @@
                     </div>
                 </a>
                 @else
-                <div class="col-span-2 group rounded-3xl shadow-2xl relative overflow-hidden transform transition-all duration-500 min-h-[200px] bg-white/10 backdrop-blur-md hover:scale-[1.05]" data-aos="fade-up">
+                <div class="lg:col-span-2 group rounded-3xl shadow-xl relative overflow-hidden transition-all duration-500 bg-white/10 backdrop-blur-md hover:scale-105 min-h-[180px] sm:min-h-[200px]">
 
                     <div class="absolute inset-0 flex items-center justify-center text-white text-5xl opacity-30">
                         <i class="fas fa-lock"></i>

@@ -2,10 +2,13 @@
 
 namespace App\Livewire;
 
+use App\Models\Bracket;
 use App\Models\Court;
 use App\Models\Game;
+use App\Models\Pair;
+use App\Models\PositionPoint;
+use App\Models\Ranking;
 use App\Models\Tournament;
-use App\Models\Venue;
 use Livewire\Component;
 
 class BracketViewer extends Component
@@ -128,9 +131,6 @@ class BracketViewer extends Component
         session()->flash('success', 'Partido actualizado correctamente.');
     }
 
-
-
-
     public function reportResult($gameId)
     {
         $game = Game::findOrFail($gameId);
@@ -176,20 +176,44 @@ class BracketViewer extends Component
 
         $winnerPosition = $this->determineWinner($game);
         if ($winnerPosition) {
+            $this->updatePlayerStats($game, $winnerPosition);
             $this->advanceBracket($game, $winnerPosition);
+
+            $bracket = $game->bracket;
+            $loserPair = $winnerPosition === 1 ? $game->pairTwo : $game->pairOne;
+
+            // ❌ No asignar puntos si pierde en primera ronda del principal
+            $esPrimeraDelPrincipal = $bracket->type === 'principal' && $game->round_number === $bracket->games()->max('round_number');
+
+            if (!$esPrimeraDelPrincipal) {
+                $seguiraJugando = $bracket->games()
+                    ->where('round_number', '<', $game->round_number)
+                    ->where(function ($q) use ($loserPair) {
+                        $q->where('pair_one_id', $loserPair->id)
+                            ->orWhere('pair_two_id', $loserPair->id);
+                    })->exists();
+
+                if (!$seguiraJugando) {
+                    $posicion = $game->round_number === 1 ? 2 : null; // 🥈 Subcampeón si es la final
+                    $this->asignarPuntosAPareja($loserPair, $bracket, $game->round_number, $posicion);
+                }
+            }
         }
 
+        // Paso a cuadro de consolación
         if (
             $game->bracket->type === 'principal' &&
             $game->round_number === $game->bracket->games()->max('round_number')
         ) {
-            $loserPairId = $winnerPosition === 1 ? $game->pair_two_id : $game->pair_one_id;
+            $loserPair = $winnerPosition === 1 ? $game->pairTwo : $game->pairOne;
 
             $consolationBracket = $game->bracket->tournament
                 ->brackets()
                 ->where('category_id', $game->bracket->category_id)
                 ->where('type', 'consolacion')
                 ->first();
+
+            $targetGame = null;
 
             if ($consolationBracket) {
                 if ($consolationBracket->games()->count() === 0) {
@@ -200,7 +224,6 @@ class BracketViewer extends Component
                     $nextPowerOfTwo = pow(2, ceil(log($totalPairs, 2)));
                     $totalRounds = log($nextPowerOfTwo, 2);
                     $gamesToCreate = [];
-                    $gameNum = 1;
 
                     for ($r = $totalRounds; $r > 0; $r--) {
                         $gamesInRound = pow(2, $r - 1);
@@ -226,25 +249,31 @@ class BracketViewer extends Component
 
                 if ($targetGame) {
                     if (is_null($targetGame->pair_one_id)) {
-                        $targetGame->pair_one_id = $loserPairId;
+                        $targetGame->pair_one_id = $loserPair->id;
                     } else {
-                        $targetGame->pair_two_id = $loserPairId;
+                        $targetGame->pair_two_id = $loserPair->id;
                     }
                     $targetGame->save();
                     $this->tryAssignNextGame($consolationBracket, $firstRound, $targetGame->game_number);
                 }
             }
+
+            if (!$consolationBracket || !$targetGame) {
+                $this->asignarPuntosAPareja($loserPair, $game->bracket, $game->round_number, 2);
+            }
         }
 
+        // 🏆 Ganadores del cuadro
         if ($game->round_number === 1 && $winnerPosition) {
             $winnerPair = $winnerPosition === 1 ? $game->pairOne : $game->pairTwo;
-            $names = $winnerPair->playerOne->name . ' y ' . $winnerPair->playerTwo->name;
 
             $bracket = $game->bracket;
             $category = $bracket->category->category_name;
             $tipo = $bracket->type === 'principal' ? 'Principal' : 'Consolación';
 
-            session()->flash('success', "🏆 ¡Ganadores del cuadro $category - $tipo: $names!");
+            session()->flash('success', "🏆 ¡Ganadores del cuadro $category - $tipo: {$winnerPair->playerOne->name} y {$winnerPair->playerTwo->name}!");
+
+            $this->asignarPuntosAPareja($winnerPair, $bracket, $game->round_number, 1);
         }
     }
 
@@ -350,6 +379,64 @@ class BracketViewer extends Component
 
         return $score1 === $score2 ? null : ($score1 > $score2 ? 1 : 2);
     }
+
+    protected function updatePlayerStats(Game $game, int $winnerPosition): void
+    {
+        $winnerPair = $winnerPosition === 1 ? $game->pairOne : $game->pairTwo;
+        $loserPair  = $winnerPosition === 1 ? $game->pairTwo : $game->pairOne;
+
+        foreach ([$winnerPair, $loserPair] as $pair) {
+            if (!$pair) continue;
+
+            foreach ($pair->players as $user) {
+                $ranking = Ranking::firstOrCreate(['user_id' => $user->id]);
+                $ranking->games_played += 1;
+
+                if ($pair->id === $winnerPair->id) {
+                    $ranking->games_won += 1;
+                }
+
+                $ranking->save();
+            }
+        }
+    }
+
+
+    protected function asignarPuntosAPareja(Pair $pair, Bracket $bracket, int $roundNumber, ?int $posicionForzada = null): void
+    {
+        $tournament = $bracket->tournament;
+        $categoryName = $bracket->category->category_name;
+        $type = $bracket->type;
+
+        // Posición alcanzada: calcula correctamente usando la profundidad del cuadro
+        $position = $posicionForzada ?? pow(2, $bracket->games()->max('round_number') - $roundNumber + 1);
+
+        // Buscar puntos base
+        $positionPoint = PositionPoint::where('category', $categoryName)
+            ->where('type', $type)
+            ->where('position', $position)
+            ->first();
+
+        if (!$positionPoint) return;
+
+        $puntos = $positionPoint->base_points * $tournament->level;
+
+        foreach ($pair->players as $user) {
+            $ranking = Ranking::firstOrCreate(['user_id' => $user->id]);
+
+            $ranking->points += $puntos;
+            $ranking->games_played += 1;
+
+            // Suma victoria si fue campeón (posición 1)
+            if ($posicionForzada === 1) {
+                $ranking->games_won += 1;
+            }
+
+            $ranking->save();
+        }
+    }
+
+
 
     public function render()
     {

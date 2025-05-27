@@ -43,6 +43,8 @@ Route::middleware([
     Route::get('/ranking', [RankingController::class, 'index'])->name('ranking.index');
 
     Route::get('contacto', [ContactController::class, 'index'])->name('contacto.index');
+
+    Route::post('contacto/enviar', [ContactController::class, 'send'])->name('contact.send');
+
+    Route::get('/ranking', [RankingController::class, 'index'])->name('ranking.index');
 });
-
-

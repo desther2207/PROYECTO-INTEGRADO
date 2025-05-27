@@ -10,9 +10,11 @@ use App\Models\TournamentSlot;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class TournamentController extends Controller
 {
+    use AuthorizesRequests;
 
     public function cuadros(Tournament $tournament)
     {
@@ -260,6 +262,8 @@ class TournamentController extends Controller
     {
         $tournament = Tournament::findOrFail($id);
 
+        $this->authorize('update', $tournament);
+
         if ($request->filled('tournament-range')) {
             $dates = explode(' a ', $request->input('tournament-range'));
             $request->merge([
@@ -368,6 +372,7 @@ class TournamentController extends Controller
     public function destroy($id)
     {
         $tournament = Tournament::findOrFail($id);
+        $this->authorize('delete', $tournament);
         $tournament->delete();
         return redirect()->route('dashboard')->with('success', 'Tournament deleted successfully');
     }

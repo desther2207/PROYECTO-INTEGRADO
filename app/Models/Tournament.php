@@ -21,6 +21,7 @@ class Tournament extends Model
         'incription_price',
         'province_id',
         'status',
+        'level',
         'inscription_start_date', // Fecha de inicio de inscripción
         'inscription_end_date',   // Fecha de fin de inscripción
         'start_date',

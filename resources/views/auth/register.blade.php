@@ -1,8 +1,6 @@
 <x-guest-layout>
-    <!-- Navbar (fondo oscuro) -->
-
-    <body class="min-h-screen flex bg-gray-900 flex-col overflow-hidden relative z-0">
-
+    <div class="min-h-screen flex flex-col bg-gray-900 overflow-hidden">
+        <!-- Navbar -->
         <header class="w-full p-6 bg-gray-900">
             <div class="container mx-auto flex justify-end items-center gap-6">
                 <nav class="flex gap-6">
@@ -28,63 +26,78 @@
             </div>
         </header>
 
-        <x-authentication-card>
-            <x-slot name="logo">
-                <!-- Ajuste del margen inferior del logo -->
-                <x-authentication-card-logo class="h-40 w-auto mx-auto" />
-            </x-slot>
-
-            <x-validation-errors class="mb-4" />
-
-            <form method="POST" action="{{ route('register') }}" class="space-y-6">
-                @csrf
-
-                <div>
-                    <x-label for="name" value="{{ __('Nombre') }}" class="text-white" />
-                    <x-input id="name" class="block mt-1 w-full bg-gray-700 text-white rounded-md" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
+        <!-- Cuerpo dividido -->
+        <div class="flex flex-col md:flex-row flex-1">
+            <!-- Lado visual izquierdo -->
+            <div class="relative w-full md:w-1/2 bg-gradient-to-br from-gray-800 to-gray-900 text-white flex justify-center items-center p-10 overflow-hidden">
+                <div class="text-center z-10">
+                    <x-authentication-card-logo class="h-28 mx-auto mb-6" />
+                    <h2 class="text-3xl font-bold">¡Únete a nosotros!</h2>
+                    <p class="mt-2 text-gray-300">Crea una cuenta para empezar a competir.</p>
                 </div>
-                <div>
-                    <x-label for="email" value="{{ __('Email') }}" class="text-white" />
-                    <x-input id="email" class="block mt-1 w-full bg-gray-700 text-white rounded-md" type="email" name="email" :value="old('email')" required autocomplete="username" />
-                </div>
+                <div class="absolute -bottom-32 -left-40 w-80 h-80 border-4 border-white border-opacity-30 rounded-full border-t-8 z-0"></div>
+                <div class="absolute -bottom-40 -left-20 w-80 h-80 border-4 border-white border-opacity-30 rounded-full border-t-8 z-0"></div>
+                <div class="absolute -top-40 -right-0 w-80 h-80 border-4 border-white border-opacity-30 rounded-full border-t-8 z-0"></div>
+                <div class="absolute -top-20 -right-20 w-80 h-80 border-4 border-white border-opacity-30 rounded-full border-t-8 z-0"></div>
+            </div>
 
-                <div>
-                    <x-label for="telephone" value="{{ __('Teléfono') }}" class="text-white" />
-                    <x-input id="telephone" class="block mt-1 w-full bg-gray-700 text-white rounded-md" type="text" name="telephone" :value="old('telephone')" required autocomplete="telephone" />
-                </div>
+            <!-- Formulario registro -->
+            <div class="w-full md:w-1/2 flex items-center justify-center bg-white py-12">
+                <form method="POST" action="{{ route('register') }}" class="w-80">
+                    @csrf
 
-                <div>
-                    <x-label for="password" value="{{ __('Contraseña') }}" class="text-white" />
-                    <x-input id="password" class="block mt-1 w-full bg-gray-700 text-white rounded-md" type="password" name="password" required autocomplete="new-password" />
-                </div>
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Regístrate</h2>
 
-                <div>
-                    <x-label for="password_confirmation" value="{{ __('Confirma contraseña') }}" class="text-white" />
-                    <x-input id="password_confirmation" class="block mt-1 w-full bg-gray-700 text-white rounded-md" type="password" name="password_confirmation" required autocomplete="new-password" />
-                </div>
+                    <x-validation-errors class="mb-4" />
 
-                @if (Laravel\Jetstream\Jetstream::hasTermsAndPrivacyPolicyFeature())
-                <div class="flex items-center mt-4">
-                    <x-checkbox name="terms" id="terms" class="text-green-500" required />
-                    <label for="terms" class="ml-2 text-white text-sm">
-                        {!! __('Acepto los :términos_de_servicio y la :política_de_privacidad', [
-                        'términos_de_servicio' => '<a href="'.route('terms.show').'" class="text-green-300 hover:text-green-500 underline">'.__('términos de servicio').'</a>',
-                        'política_de_privacidad' => '<a href="'.route('policy.show').'" class="text-green-300 hover:text-green-500 underline">'.__('política de privacidad').'</a>',
-                        ]) !!}
-                    </label>
-                </div>
-                @endif
+                    <div class="mb-4">
+                        <x-label for="name" value="Nombre" />
+                        <x-input id="name" class="mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
+                    </div>
 
-                <div class="flex items-center justify-between mt-6">
-                    <a class="underline text-sm text-gray-300 hover:text-white" href="{{ route('login') }}">
-                        {{ __('¿Ya tienes una cuenta?') }}
-                    </a>
+                    <div class="mb-4">
+                        <x-label for="email" value="Email" />
+                        <x-input id="email" class="mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
+                    </div>
 
-                    <x-button class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg">
-                        {{ __('REGÍSTRATE') }}
-                    </x-button>
-                </div>
-            </form>
-        </x-authentication-card>
-    </body>
+                    <div class="mb-4">
+                        <x-label for="telephone" value="Teléfono" />
+                        <x-input id="telephone" class="mt-1 w-full" type="text" name="telephone" :value="old('telephone')" required autocomplete="telephone" />
+                    </div>
+
+                    <div class="mb-4">
+                        <x-label for="password" value="Contraseña" />
+                        <x-input id="password" class="mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
+                    </div>
+
+                    <div class="mb-4">
+                        <x-label for="password_confirmation" value="Confirma contraseña" />
+                        <x-input id="password_confirmation" class="mt-1 w-full" type="password" name="password_confirmation" required autocomplete="new-password" />
+                    </div>
+
+                    @if (Laravel\Jetstream\Jetstream::hasTermsAndPrivacyPolicyFeature())
+                    <div class="flex items-center mt-4">
+                        <x-checkbox name="terms" id="terms" required />
+                        <label for="terms" class="ml-2 text-sm text-gray-700">
+                            {!! __('Acepto los :términos_de_servicio y la :política_de_privacidad', [
+                            'términos_de_servicio' => '<a href="'.route('terms.show').'" class="text-indigo-600 hover:text-indigo-800 underline">'.__('términos de servicio').'</a>',
+                            'política_de_privacidad' => '<a href="'.route('policy.show').'" class="text-indigo-600 hover:text-indigo-800 underline">'.__('política de privacidad').'</a>',
+                            ]) !!}
+                        </label>
+                    </div>
+                    @endif
+
+                    <div class="flex items-center justify-between mt-6">
+                        <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('login') }}">
+                            ¿Ya tienes una cuenta?
+                        </a>
+
+                        <x-button class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg">
+                            REGÍSTRATE
+                        </x-button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </x-guest-layout>

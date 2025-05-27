@@ -24,6 +24,7 @@ return new class extends Migration
             $table->date('inscription_end_date')->nullable(); //Fecha de fin de inscripción
             $table->date('start_date');
             $table->date('end_date');
+            $table->integer('level')->default(4);
             $table->integer('max_pairs'); //Numero de parejas máximas que tendrá el torneo.
             $table->integer('current_pairs')->default(0); //Número de parejas actual del torneo(empezará siempre en cero)
             $table->timestamps();

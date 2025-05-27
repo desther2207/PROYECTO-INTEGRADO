@@ -35,7 +35,7 @@
                             </div>
 
                             <!-- Columna de información -->
-                            <div class="md:w-2/3 text-black md:pl-4">
+                            <div class="md:w-2/3 text-black mt-4 md:mt-0 md:pl-6">
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div>
                                         <p><strong>Nivel:</strong> {{ ucfirst($tournament->level) }}</p>
@@ -89,87 +89,87 @@
                         @endphp
 
                         @if ($tournament->status === 'inscripcion' && $hoy->between($inscripcionInicio, $inscripcionFin) && $tournament->current_pairs < $tournament->max_pairs)
-                        <!-- Inscripciones abiertas -->
-                        <h2 class="text-xl font-semibold mb-2">Inscripciones</h2>
-                        <div class="-mx-4">
-                            <hr class="my-2">
-                        </div>
+                            <!-- Inscripciones abiertas -->
+                            <h2 class="text-xl font-semibold mb-2">Inscripciones</h2>
+                            <div class="-mx-4">
+                                <hr class="my-2">
+                            </div>
 
-                        <p class="mb-4 mt-2">
-                            Para inscribirte, revisa los requisitos y haz clic en el botón:
-                        </p>
-                        <p>
-                            <strong>Inicio inscripciones:</strong>
-                            {{ \Carbon\Carbon::parse($tournament->inscription_start_date)->format('d/m/Y') }}
-                        </p>
-                        <p>
-                            <strong>Fin inscripciones:</strong>
-                            {{ \Carbon\Carbon::parse($tournament->inscription_end_date)->format('d/m/Y') }}
-                        </p>
-                        <p class="mb-4 mt-4">
-                            <strong>Precio inscripción:</strong>
-                            ${{ number_format($tournament->incription_price, 2) }}
-                        </p>
-                        <!-- Periodo de inscripción activo -->
-                        <a
-                            href="{{ route('pairs.create', ['tournament_id' => $tournament->id]) }}"
-                            class="block text-center bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700">
-                            Inscribirse
-                        </a>
-
-                        @elseif ($tournament->status === 'en curso')
-                        <!-- Torneo en curso -->
-                        <h2 class="text-xl font-semibold mb-2">Ver torneo</h2>
-                        <div class="-mx-4">
-                            <hr class="my-2">
-                        </div>
-                        <a
-                            href="#"
-                            class="block text-center bg-green-600 text-white font-bold py-2 px-4 rounded hover:bg-green-700">
-                            Ver cuadros
-                        </a>
-
-                        @elseif ($tournament->status === 'finalizado')
-                        <h2 class="text-xl font-semibold mb-2">Ver torneo</h2>
-                        <div class="-mx-4">
-                            <hr class="my-2">
-                        </div>
-                        <!-- Torneo finalizado -->
-                        <div class="text-center font-semibold text-gray-500">
-                            Torneo finalizado
-                        </div>
-                        @else
-                        <!-- Estado pendiente -->
-                        <!-- Inscripciones abiertas -->
-                        <h2 class="text-xl font-semibold mb-2">Inscripciones</h2>
-                        <div class="-mx-4">
-                            <hr class="my-2">
-                        </div>
-
-                        <p class="mb-4 mt-2">
-                            Periodo de inscripción no disponible, revisa las fechas.
-                        </p>
-                        <p>
-                            <strong>Inicio inscripciones:</strong>
-                            {{ \Carbon\Carbon::parse($tournament->inscription_start_date)->format('d/m/Y') }}
-                        </p>
-                        <p>
-                            <strong>Fin inscripciones:</strong>
-                            {{ \Carbon\Carbon::parse($tournament->inscription_end_date)->format('d/m/Y') }}
-                        </p>
-                        <p class="mb-4 mt-4">
-                            <strong>Precio inscripción:</strong>
-                            ${{ number_format($tournament->incription_price, 2) }}
-                        </p>
-                        @endif
-
-                        <div class="mt-6">
+                            <p class="mb-4 mt-2">
+                                Para inscribirte, revisa los requisitos y haz clic en el botón:
+                            </p>
+                            <p>
+                                <strong>Inicio inscripciones:</strong>
+                                {{ \Carbon\Carbon::parse($tournament->inscription_start_date)->format('d/m/Y') }}
+                            </p>
+                            <p>
+                                <strong>Fin inscripciones:</strong>
+                                {{ \Carbon\Carbon::parse($tournament->inscription_end_date)->format('d/m/Y') }}
+                            </p>
+                            <p class="mb-4 mt-4">
+                                <strong>Precio inscripción:</strong>
+                                ${{ number_format($tournament->incription_price, 2) }}
+                            </p>
+                            <!-- Periodo de inscripción activo -->
                             <a
-                                href="{{ route('tournaments.cuadros', $tournament) }}"
-                                class="block text-center bg-indigo-600 text-white font-bold py-2 px-4 rounded hover:bg-indigo-700">
-                                Ver cuadros del torneo
+                                href="{{ route('pairs.create', ['tournament_id' => $tournament->id]) }}"
+                                class="block text-center bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700">
+                                Inscribirse
                             </a>
-                        </div>
+
+                            @elseif ($tournament->status === 'en curso')
+                            <!-- Torneo en curso -->
+                            <h2 class="text-xl font-semibold mb-2">Ver torneo</h2>
+                            <div class="-mx-4">
+                                <hr class="my-2">
+                            </div>
+                            <a
+                                href="#"
+                                class="block text-center bg-green-600 text-white font-bold py-2 px-4 rounded hover:bg-green-700">
+                                Ver cuadros
+                            </a>
+
+                            @elseif ($tournament->status === 'finalizado')
+                            <h2 class="text-xl font-semibold mb-2">Ver torneo</h2>
+                            <div class="-mx-4">
+                                <hr class="my-2">
+                            </div>
+                            <!-- Torneo finalizado -->
+                            <div class="text-center font-semibold text-gray-500">
+                                Torneo finalizado
+                            </div>
+                            @else
+                            <!-- Estado pendiente -->
+                            <!-- Inscripciones abiertas -->
+                            <h2 class="text-xl font-semibold mb-2">Inscripciones</h2>
+                            <div class="-mx-4">
+                                <hr class="my-2">
+                            </div>
+
+                            <p class="mb-4 mt-2">
+                                Periodo de inscripción no disponible, revisa las fechas.
+                            </p>
+                            <p>
+                                <strong>Inicio inscripciones:</strong>
+                                {{ \Carbon\Carbon::parse($tournament->inscription_start_date)->format('d/m/Y') }}
+                            </p>
+                            <p>
+                                <strong>Fin inscripciones:</strong>
+                                {{ \Carbon\Carbon::parse($tournament->inscription_end_date)->format('d/m/Y') }}
+                            </p>
+                            <p class="mb-4 mt-4">
+                                <strong>Precio inscripción:</strong>
+                                ${{ number_format($tournament->incription_price, 2) }}
+                            </p>
+                            @endif
+
+                            <div class="mt-6">
+                                <a
+                                    href="{{ route('tournaments.cuadros', $tournament) }}"
+                                    class="block text-center bg-indigo-600 text-white font-bold py-2 px-4 rounded hover:bg-indigo-700">
+                                    Ver cuadros del torneo
+                                </a>
+                            </div>
                     </div>
                 </div>
             </div>

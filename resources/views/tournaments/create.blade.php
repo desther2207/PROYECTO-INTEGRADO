@@ -28,7 +28,7 @@
                         </p>
 
                         <!-- Grilla de 6 columnas: Izquierda (4 columnas) para Nombre y Descripción, Derecha (2 columnas) para Cartel -->
-                        <div class="mt-10 grid grid-cols-6 gap-x-6 gap-y-8">
+                        <div class="mt-10 grid grid-cols-1 sm:grid-cols-6 gap-x-6 gap-y-8">
                             <!-- Columna Izquierda: Nombre y Descripción (4 columnas) -->
                             <div class="sm:col-span-4 space-y-8">
                                 <!-- Nombre del torneo -->

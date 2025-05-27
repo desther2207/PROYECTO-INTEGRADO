@@ -1,8 +1,8 @@
 <x-guest-layout>
-    <!-- Página de login con fondo específico -->
-    <body class="min-h-screen flex bg-gray-900 flex-col overflow-hidden relative z-0">
+    <!-- Fondo general -->
+    <div class="min-h-screen flex flex-col bg-gray-900 overflow-hidden">
 
-        <!-- Navbar (fondo oscuro) -->
+        <!-- Navbar -->
         <header class="w-full p-6 bg-gray-900">
             <div class="container mx-auto flex justify-end items-center gap-6">
                 <nav class="flex gap-6">
@@ -28,54 +28,66 @@
             </div>
         </header>
 
-        <!-- Contenedor central de login -->
-        <x-authentication-card>
-            <x-slot name="logo">
-                <!-- Mantener el diseño original del logo -->
-                <x-authentication-card-logo class="h-40 w-auto mx-auto" />
-            </x-slot>
-
-            <x-validation-errors class="mb-4" />
-
-            @if (session('status'))
-                <div class="mb-4 font-medium text-sm text-green-600">
-                    {{ session('status') }}
+        <!-- Cuerpo dividido -->
+        <div class="flex flex-col md:flex-row flex-1">
+            <!-- Lado izquierdo visual -->
+            <div class="relative w-full md:w-1/2 bg-gradient-to-br from-gray-800 to-gray-900 text-white flex justify-center items-center p-10 overflow-hidden">
+                <div class="text-center z-10">
+                    <x-authentication-card-logo class="h-28 mx-auto mb-6" />
+                    <h2 class="text-3xl font-bold">¡Bienvenido!</h2>
+                    <p class="mt-2 text-gray-300">Inicia sesión para acceder a tu cuenta.</p>
                 </div>
-            @endif
+                <div class="absolute -bottom-32 -left-40 w-80 h-80 border-4 border-white border-opacity-30 rounded-full border-t-8 z-0"></div>
+                <div class="absolute -bottom-40 -left-20 w-80 h-80 border-4 border-white border-opacity-30 rounded-full border-t-8 z-0"></div>
+                <div class="absolute -top-40 -right-0 w-80 h-80 border-4 border-white border-opacity-30 rounded-full border-t-8 z-0"></div>
+                <div class="absolute -top-20 -right-20 w-80 h-80 border-4 border-white border-opacity-30 rounded-full border-t-8 z-0"></div>
+            </div>
 
-            <form method="POST" action="{{ route('login') }}" class="space-y-6 bg-gray-800 p-6 rounded-lg shadow-lg">
-                @csrf
+            <!-- Formulario login -->
+            <div class="w-full md:w-1/2 flex items-center justify-center bg-white py-12">
+                <form method="POST" action="{{ route('login') }}" class="w-80">
+                    @csrf
 
-                <div>
-                    <x-label for="email" value="{{ __('Email') }}" class="text-white" />
-                    <x-input id="email" class="block mt-1 w-full bg-gray-700 text-white rounded-md" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-                </div>
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Iniciar sesión</h2>
 
-                <div>
-                    <x-label for="password" value="{{ __('Contraseña') }}" class="text-white" />
-                    <x-input id="password" class="block mt-1 w-full bg-gray-700 text-white rounded-md" type="password" name="password" required autocomplete="current-password" />
-                </div>
+                    <x-validation-errors class="mb-4" />
 
-                <div class="flex items-center mt-4">
-                    <label for="remember_me" class="flex items-center">
-                        <x-checkbox id="remember_me" name="remember" class="text-white" />
-                        <span class="ms-2 text-sm text-gray-300">{{ __('Recordarme') }}</span>
-                    </label>
-                </div>
-
-
-                <div class="flex items-center justify-between mt-6">
-                    @if (Route::has('password.request'))
-                        <a class="underline text-sm text-gray-300 hover:text-white" href="{{ route('password.request') }}">
-                            {{ __('¿Olvidaste tu contraseña?') }}
-                        </a>
+                    @if (session('status'))
+                    <div class="mb-4 font-medium text-sm text-green-600">
+                        {{ session('status') }}
+                    </div>
                     @endif
 
-                    <x-button class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg">
-                        {{ __('Iniciar sesión') }}
+                    <div class="mb-4">
+                        <x-label for="email" value="Correo electrónico" />
+                        <x-input id="email" class="mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
+                    </div>
+
+                    <div class="mb-4">
+                        <x-label for="password" value="Contraseña" />
+                        <x-input id="password" class="mt-1 w-full" type="password" name="password" required autocomplete="current-password" />
+                    </div>
+
+                    <div class="flex items-center mb-4">
+                        <label for="remember_me" class="flex items-center">
+                            <x-checkbox id="remember_me" name="remember" />
+                            <span class="ml-2 text-sm text-gray-600">Recordarme</span>
+                        </label>
+                    </div>
+
+                    <div class="flex items-center justify-between mb-6">
+                        @if (Route::has('password.request'))
+                        <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('password.request') }}">
+                            ¿Olvidaste tu contraseña?
+                        </a>
+                        @endif
+                    </div>
+
+                    <x-button class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg">
+                        Iniciar sesión
                     </x-button>
-                </div>
-            </form>
-        </x-authentication-card>
-    </body>
+                </form>
+            </div>
+        </div>
+    </div>
 </x-guest-layout>
