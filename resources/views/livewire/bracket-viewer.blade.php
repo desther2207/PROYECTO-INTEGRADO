@@ -37,9 +37,9 @@
 
             {{-- BOTONES DE GESTIÓN --}}
             @if ($bracket && $bracket->games->count() === 0 && $bracket->type != 'consolacion' && auth()->user()?->isOrganizerOf($tournament) || auth()->user()?->role === 'admin' && $bracket->games->count() === 0 && $bracket->type != 'consolacion')
-            <form action="{{ route('brackets.generateGames', $bracket) }}" method="POST" class="inline-block mb-4">
+            <form action="{{ route('brackets.generateGames', $bracket) }}" method="POST" class="inline-block mb-4" role="form" aria-label="Formulario para reiniciar el torneo completo">
                 @csrf
-                <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-500">
+                <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-500" aria-label="Generar partidos manualmente del cuadro {{ $label }} de la categoría {{ $category->category_name }}">
                     Generar partidos manualmente
                 </button>
             </form>
@@ -288,5 +288,52 @@
             justify-content: center;
         }
     </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        document.addEventListener('bracket-winner', function(event) {
+            const message = event.detail.message;
+
+            Swal.fire({
+                title: '¡Torneo ganado!',
+                text: message,
+                icon: 'success',
+                confirmButtonText: 'Felicidades 🎉',
+                didOpen: () => {
+                    launchConfetti();
+                }
+            });
+        });
+
+
+        function launchConfetti() {
+            const duration = 3 * 1000;
+            const end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 5,
+                    angle: 60,
+                    spread: 55,
+                    origin: {
+                        x: 0
+                    }
+                });
+                confetti({
+                    particleCount: 5,
+                    angle: 120,
+                    spread: 55,
+                    origin: {
+                        x: 1
+                    }
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+        };
+    </script>
 
 </div>

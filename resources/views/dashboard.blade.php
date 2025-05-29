@@ -9,7 +9,7 @@
         <div class="px-6 pt-6 flex items-start justify-center">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-screen-xl w-full px-4 mx-auto">
 
-                <a href="{{ route('tournaments') }}"
+                <a href="{{ route('tournaments') }}" aria-label="Ir a la sección de torneos"
                     class="lg:row-span-2 group rounded-3xl shadow-xl relative overflow-hidden transition-all duration-500 bg-white/10 backdrop-blur-md hover:scale-105 hover:bg-white/80 min-h-[280px] sm:min-h-[320px] lg:min-h-[420px]"
                     data-aos="fade-left"
                     data-aos-duration="1000"
@@ -35,7 +35,7 @@
                 </a>
 
                 <!-- Ranking -->
-                <a href="{{ route('ranking.index') }}"
+                <a href="{{ route('ranking.index') }}" aria-label="Ver ranking de jugadores"
                     class="group rounded-3xl shadow-xl relative overflow-hidden transition-all duration-500 bg-white/10 backdrop-blur-md hover:scale-105 hover:bg-white/80 min-h-[180px] sm:min-h-[200px]"
                     data-aos="fade-down"
                     data-aos-duration="1000"
@@ -59,7 +59,7 @@
                 </a>
 
                 <!-- Contacto -->
-                <a href="{{ route('contacto.index') }}"
+                <a href="{{ route('contacto.index') }}" aria-label="Ir a la sección de contacto"
                     class="group rounded-3xl shadow-xl relative overflow-hidden transition-all duration-500 bg-white/10 backdrop-blur-md hover:scale-105 hover:bg-white/80 min-h-[180px] sm:min-h-[200px]"
                     data-aos="fade-right"
                     data-aos-duration="1000"
@@ -85,7 +85,7 @@
                 <!-- Crear Torneo -->
                 @if (Auth::user()->role == 'editor' || Auth::user()->role == 'admin')
 
-                <a href="{{ route('tournaments.create') }}"
+                <a href="{{ route('tournaments.create') }}" aria-label="Crear nuevo torneo"
                     class="lg:col-span-2 group rounded-3xl shadow-xl relative overflow-hidden transition-all duration-500 bg-white/10 backdrop-blur-md hover:scale-105 hover:bg-white/80 min-h-[180px] sm:min-h-[200px]"
                     data-aos="fade-up"
                     data-aos-duration="1000"
@@ -108,7 +108,7 @@
                     </div>
                 </a>
                 @else
-                <div class="lg:col-span-2 group rounded-3xl shadow-xl relative overflow-hidden transition-all duration-500 bg-white/10 backdrop-blur-md hover:scale-105 min-h-[180px] sm:min-h-[200px]">
+                <div class="lg:col-span-2 group rounded-3xl shadow-xl relative overflow-hidden transition-all duration-500 bg-white/10 backdrop-blur-md hover:scale-105 min-h-[180px] sm:min-h-[200px]" role="region" aria-label="Acceso restringido a crear torneo" aria-hidden="true">
 
                     <div class="absolute inset-0 flex items-center justify-center text-white text-5xl opacity-30">
                         <i class="fas fa-lock"></i>
@@ -123,9 +123,9 @@
 
         {{-- ====== SECCIÓN DE "MIS TORNEOS" ====== --}}
         @if (Auth::user()->role == 'editor' || Auth::user()->role == 'admin')
-        <div class="px-6 mt-20">
+        <div class="px-6 mt-20" role="region" aria-labelledby="mis-torneos-heading">
             <div class="flex justify-between items-center">
-                <h2 class="font-oswald-italic text-3xl">MIS TORNEOS</h2>
+                <h2 id="mis-torneos-heading" class="font-oswald-italic text-3xl">MIS TORNEOS</h2>
                 <a href="{{ route('tournaments') }}" class="text-blue-500 hover:text-blue-700">Ver todos</a>
             </div>
 
@@ -133,7 +133,7 @@
                 @foreach ($tournaments as $tournament)
                 <div class="carousel-item">
                     <div class="bg-gray-800 p-4 rounded-box shadow-lg w-80 h-full flex-shrink-0 group relative">
-                        <a href="{{ route('tournaments.show', $tournament->id) }}" class="block">
+                        <a href="{{ route('tournaments.show', $tournament->id) }}" class="block" aria-label="Ver torneo: {{ $tournament->tournament_name }}">
                             <img src="{{ asset('storage/' . $tournament->tournament_image) }}" alt="Imagen del torneo"
                                 class="w-full h-32 object-cover rounded-lg mb-4">
                             <h2 class="text-xl font-bold text-white">{{ $tournament->tournament_name }}</h2>
@@ -148,17 +148,16 @@
                         </a>
 
                         <div class="absolute bottom-2 right-2 z-10">
-                            <button onclick="toggleMenu(this)" class="text-white hover:text-gray-300 focus:outline-none">
+                            <button aria-label="Opciones del torneo {{ $tournament->tournament_name }}" onclick="toggleMenu(this)" class="text-white hover:text-gray-300 focus:outline-none">
                                 <i class="fa-solid fa-ellipsis-vertical m-2"></i>
                             </button>
-                            <div class="menu-options absolute right-0 bottom-8 w-32 bg-white rounded-md shadow-lg z-20 hidden">
-                                <a href="{{ route('tournaments.edit', $tournament->id) }}"
+                            <div class="menu-options absolute right-0 bottom-8 w-32 bg-white rounded-md shadow-lg z-20 hidden" role="menu" aria-label="Opciones de torneo">
+                                <a href="{{ route('tournaments.edit', $tournament->id) }}" role="menuitem"
                                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Editar</a>
-                                <form method="POST" action="{{ route('tournaments.destroy', $tournament->id) }}"
-                                    onsubmit="return confirm('¿Estás seguro?')">
+                                <form method="POST" action="{{ route('tournaments.destroy', $tournament->id) }}" class="delete-form">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit"
+                                    <button type="submit" role="menuitem"
                                         class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Borrar</button>
                                 </form>
                             </div>
@@ -198,3 +197,40 @@
 
     </x-self.base>
 </x-app-layout>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.delete-form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                Swal.fire({
+                    title: '¿Seguro que quieres borrar este torneo?',
+                    text: "No podrás recuperarla después.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Sí, bórrala',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+    });
+</script>
+
+@if (session('success'))
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: '¡Perfecto!',
+        text: "{{ session('success') }}",
+        confirmButtonColor: '#3085d6',
+        confirmButtonText: 'Aceptar'
+    });
+</script>
+@endif

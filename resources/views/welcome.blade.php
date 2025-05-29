@@ -54,7 +54,7 @@
 
 <body class="font-roboto m-0 p-0">
     <!-- Header original restaurado completamente transparente -->
-    <header class="sticky top-0 z-50 bg-black bg-opacity-80 text-white">
+    <header class="sticky top-0 z-50 bg-black bg-opacity-80 text-white" role="banner">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
                 <!-- Logo -->
@@ -76,10 +76,10 @@
                 </div>
 
                 <!-- Menú de navegación -->
-                <nav id="nav-menu"
+                <nav id="nav-menu" aria-label="Menu principal"
                     class="hidden md:flex flex-col md:flex-row gap-y-3 md:gap-y-0 md:gap-x-6 items-start md:items-center absolute md:static top-20 left-0 w-full md:w-auto bg-black bg-opacity-90 md:bg-transparent px-6 py-4 md:p-0">
 
-                    <a href="{{ route('dashboard') }}" class="hover:text-indigo-300">Inicio</a>
+                    <a href="{{ route('dashboard') }}" class="hover:text-indigo-300" aria-current="page">Inicio</a>
                     <a href="{{ route('tournaments') }}" class="hover:text-indigo-300">Torneos</a>
                     <a href="{{ route('ranking.index') }}" class="hover:text-indigo-300">Ranking</a>
                     <a href="{{ route('contacto.index') }}" class="hover:text-indigo-300">Contacto</a>
@@ -114,22 +114,22 @@
 
 
     <!-- Hero Section -->
-    <section class="bg-cover bg-center h-screen text-white" style="background-image: url('{{ asset('storage/images/site/padel-background.webp') }}')">
+    <section class="bg-cover bg-center h-screen text-white" aria-labelledby="bienvenida-heading" role="region" style="background-image: url('{{ asset('storage/images/site/padel-background.webp') }}')">
         <div class="bg-black bg-opacity-50 h-full flex items-center justify-center">
             <div class="text-center px-6 fade-in">
-                <h1 class="text-5xl md:text-7xl font-oswald font-bold">Bienvenido a e3Padel</h1>
+                <h1 id="bienvenida-heading" class="text-5xl md:text-7xl font-oswald font-bold">Bienvenido a e3Padel</h1>
                 <p class="text-xl mt-4 text-gray-200">Organiza y participa en torneos de pádel de manera sencilla</p>
             </div>
         </div>
     </section>
 
     <!-- Funcionalidades -->
-    <section id="funcionalidad" class="py-16 bg-white">
+    <section id="funcionalidad" class="py-16 bg-white" aria-labelledby="funcionalidad-heading">
         <div class="container mx-auto px-6">
-            <h2 class="text-3xl font-oswald text-center mb-12 text-black">¿Qué puedes hacer en e3Padel?</h2>
+            <h2 id="funcionalidad-heading" class="text-3xl font-oswald text-center mb-12 text-black">¿Qué puedes hacer en e3Padel?</h2>
             <div class="grid md:grid-cols-3 gap-12 text-black">
                 <div class="text-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 mx-auto text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 mx-auto text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
@@ -160,8 +160,8 @@
     </section>
 
     <!-- Llamado a la acción -->
-    <section id="registro" class="py-20 bg-blue-600 text-white text-center">
-        <h2 class="text-4xl font-bold mb-6">¿Estás listo para comenzar?</h2>
+    <section id="registro" class="py-20 bg-blue-600 text-white text-center" role="region" aria-labelledby="registro-heading">
+        <h2 id="registro-heading" class="text-4xl font-bold mb-6">¿Estás listo para comenzar?</h2>
         <p class="mb-6">Regístrate como organizador o jugador y únete a la comunidad de e3Padel.</p>
         <div class="flex justify-center gap-6">
             <a href="{{ route('register') }}" class="bg-white text-blue-600 px-6 py-3 rounded hover:bg-gray-100">Soy Organizador</a>
@@ -170,7 +170,7 @@
     </section>
 
     <!-- Footer -->
-    <footer class="bg-gray-800 text-white py-6 text-center">
+    <footer class="bg-gray-800 text-white py-6 text-center" role="contentinfo">
         <p>&copy; 2025 e3Padel. Todos los derechos reservados.</p>
     </footer>
 </body>

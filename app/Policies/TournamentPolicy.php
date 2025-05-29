@@ -37,7 +37,7 @@ class TournamentPolicy
      */
     public function update(User $user, Tournament $tournament): bool
     {
-        return $user->id===$tournament->user_id;
+    return $user->role === 'admin' || $tournament->organizers()->where('user_id', $user->id)->exists();
     }
 
     /**
@@ -45,7 +45,7 @@ class TournamentPolicy
      */
     public function delete(User $user, Tournament $tournament): bool
     {
-        return $user->id===$tournament->user_id;
+    return $user->role === 'admin' || $tournament->organizers()->where('user_id', $user->id)->exists();
     }
 
     /**

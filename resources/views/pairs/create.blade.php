@@ -2,35 +2,43 @@
     <x-self.base>
         <title>Inscribirse al Torneo</title>
 
-        <div class="container mx-auto p-4">
-            <h1 class="text-2xl font-bold mb-6 text-white">Inscripción a Torneo</h1>
+        <div class="container mx-auto p-4" role="main" aria-labelledby="inscripcion-title">
+            <h1 id="inscripcion-title" class="text-2xl font-bold mb-6 text-white">Inscripción a Torneo</h1>
 
             @if(session('success'))
-            <div class="mb-4 p-4 bg-green-900 text-green-400 rounded">
+            <div class="mb-4 p-4 bg-green-900 text-green-400 rounded" role="status" aria-live="polite">
                 {{ session('success') }}
             </div>
             @endif
 
-            <form action="{{ route('pairs.store') }}" method="POST" class="space-y-6">
+            <form action="{{ route('pairs.store') }}" method="POST" class="space-y-6" aria-describedby="form-desc">
                 @csrf
 
                 <!-- Campo oculto con el ID del torneo -->
                 <input type="hidden" name="tournament_id" value="{{ $tournament->id }}">
 
-                <p class="text-white">
+                <p id="form-desc" class="text-white">
                     Estás a punto de inscribirte en el torneo: <br>
                     <span class="font-bold">{{ $tournament->tournament_name }}</span>
                 </p>
 
-                <div class="mt-6">
-                    <label class="block text-sm font-medium text-white mb-2">
+                <div class="mt-6" role="group" aria-labelledby="slots-label">
+                    <label id="slots-label" class="block text-sm font-medium text-white mb-2">
                         Selecciona 7 horarios en los que NO podrías jugar
                     </label>
-                    <p class="text-gray-400 mb-4 text-sm">Según las fechas del torneo, selecciona 7 slots que no te vengan bien para jugar.</p>
+                    <p class="text-gray-400 mb-4 text-sm">
+                        Según las fechas del torneo, selecciona 7 slots que no te vengan bien para jugar.
+                    </p>
 
-                    <div class="calendar-grid">
+                    <div class="calendar-grid" role="list" aria-label="Calendario de horarios disponibles">
                         @foreach ($tournament->slots as $slot)
-                        <div class="calendar-cell" data-slot-id="{{ $slot->id }}">
+                        <div
+                            class="calendar-cell"
+                            data-slot-id="{{ $slot->id }}"
+                            role="listitem"
+                            tabindex="0"
+                            aria-pressed="false"
+                            aria-label="Slot {{ \Carbon\Carbon::parse($slot->slot_date)->format('d/m/Y') }} de {{ \Carbon\Carbon::parse($slot->start_time)->format('H:i') }} a {{ \Carbon\Carbon::parse($slot->end_time)->format('H:i') }}">
                             {{ \Carbon\Carbon::parse($slot->slot_date)->format('d/m/Y') }}
                             {{ \Carbon\Carbon::parse($slot->start_time)->format('H:i') }} -
                             {{ \Carbon\Carbon::parse($slot->end_time)->format('H:i') }}
@@ -41,16 +49,13 @@
                     <input type="hidden" name="unavailable_slots" id="unavailable_slots">
 
                     @if(session('error'))
-                    <div class="mb-4 mt-2 p-4 bg-red-900 text-red-400 rounded">
+                    <div class="mb-4 mt-2 p-4 bg-red-900 text-red-400 rounded" role="alert">
                         {{ session('error') }}
                     </div>
                     @endif
-
-
                 </div>
 
-
-                <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded w-full">
+                <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded w-full" aria-label="Confirmar inscripción al torneo">
                     Confirmar inscripción
                 </button>
             </form>
@@ -90,6 +95,7 @@
             if (selectedSlots.has(slotId)) {
                 selectedSlots.delete(slotId);
                 cell.classList.remove('selected');
+                cell.setAttribute('aria-pressed', 'false');
             } else {
                 if (selectedSlots.size >= 7) {
                     alert('Solo puedes seleccionar 7 horarios no disponibles.');
@@ -97,9 +103,18 @@
                 }
                 selectedSlots.add(slotId);
                 cell.classList.add('selected');
+                cell.setAttribute('aria-pressed', 'true');
             }
 
             document.getElementById('unavailable_slots').value = Array.from(selectedSlots).join(',');
+        });
+
+        // Accesibilidad con teclado
+        cell.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                cell.click();
+            }
         });
     });
 </script>

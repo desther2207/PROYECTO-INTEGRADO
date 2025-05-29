@@ -271,7 +271,9 @@ class BracketViewer extends Component
             $category = $bracket->category->category_name;
             $tipo = $bracket->type === 'principal' ? 'Principal' : 'Consolación';
 
-            session()->flash('success', "🏆 ¡Ganadores del cuadro $category - $tipo: {$winnerPair->playerOne->name} y {$winnerPair->playerTwo->name}!");
+            $this->dispatch('bracket-winner', [
+                'message' => "🏆 ¡Ganadores del cuadro $category - $tipo: {$winnerPair->playerOne->name} y {$winnerPair->playerTwo->name}!"
+            ]);
 
             $this->asignarPuntosAPareja($winnerPair, $bracket, $game->round_number, 1);
         }

@@ -1,13 +1,13 @@
 <x-guest-layout>
     <div class="py-12 px-4 bg-gray-900 text-white min-h-screen flex flex-col items-center">
-        <div class="mb-8">
+        <div class="mb-8" role="banner" aria-label="Logo principal">
             <x-authentication-card-logo class="w-40 h-40" />
         </div>
 
-        <div class="w-full max-w-4xl bg-gray-800 p-8 rounded-xl shadow-md">
-            <h1 class="text-3xl font-extrabold mb-6 text-center text-green-400">Términos y Condiciones</h1>
+        <div class="w-full max-w-4xl bg-gray-800 p-8 rounded-xl shadow-md" role="main" aria-label="Contenido de términos y condiciones">
+            <h1 class="text-3xl font-extrabold mb-6 text-center text-green-400" id="terms-title">Términos y Condiciones</h1>
 
-            <p class="mb-6 text-gray-300 leading-relaxed text-justify">
+            <p class="mb-6 text-gray-300 leading-relaxed text-justify" aria-describedby="terms-title">
                 Al utilizar nuestra plataforma para participar en torneos de pádel, aceptas los siguientes términos y condiciones. Te recomendamos que los leas detenidamente.
             </p>
 
@@ -22,11 +22,13 @@
                 ['Protección de datos', 'Tus datos serán tratados de acuerdo con nuestra <a href="' . route('policy.show') . '" class="underline text-green-400 hover:text-green-500">Política de Privacidad</a>.'],
                 ['Modificaciones', 'Nos reservamos el derecho de modificar estos términos en cualquier momento. Se te notificará si hay cambios importantes.'],
             ] as [$title, $text])
-                <h2 class="text-xl font-bold mt-8 text-green-300">{{ $loop->iteration }}. {{ $title }}</h2>
-                <p class="text-gray-300 mt-2 text-justify leading-relaxed">{!! $text !!}</p>
+                <section aria-labelledby="term-{{ $loop->iteration }}">
+                    <h2 id="term-{{ $loop->iteration }}" class="text-xl font-bold mt-8 text-green-300">{{ $loop->iteration }}. {{ $title }}</h2>
+                    <p class="text-gray-300 mt-2 text-justify leading-relaxed">{!! $text !!}</p>
+                </section>
             @endforeach
 
-            <p class="mt-8 text-sm text-gray-400 text-right">
+            <p class="mt-8 text-sm text-gray-400 text-right" aria-label="Fecha de última actualización">
                 Última actualización: {{ now()->format('d/m/Y') }}
             </p>
         </div>

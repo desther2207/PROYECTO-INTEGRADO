@@ -42,6 +42,7 @@
                                                 type="text"
                                                 name="tournament_name"
                                                 id="tournament_name"
+                                                value="{{ old('tournament_name') }}"
                                                 placeholder="Nombre del torneo..."
                                                 class="block w-full rounded-md bg-gray-800 px-3 py-1.5 text-base text-white placeholder:text-gray-400 focus:outline-none">
                                         </div>
@@ -59,7 +60,7 @@
                                             id="description"
                                             rows="3"
                                             placeholder="Descripción del torneo"
-                                            class="block w-full rounded-md bg-gray-800 px-3 py-1.5 text-base text-white placeholder:text-gray-400 focus:outline-none focus:outline-indigo-500"></textarea>
+                                            class="block w-full rounded-md bg-gray-800 px-3 py-1.5 text-base text-white placeholder:text-gray-400 focus:outline-none focus:outline-indigo-500">{{ old('description') }}</textarea>
                                     </div>
                                     <p class="mt-3 text-sm text-gray-400">
                                         Escribe alguna información relevante sobre el torneo.
@@ -217,7 +218,7 @@
                             <label for="inscription_price" class="block text-sm font-medium text-white">Precio de inscripción</label>
                             <p class="mt-1 text-sm text-gray-400">Indica el precio de inscripción por pareja.</p>
                             <div class="mt-2">
-                                <input type="number" name="incription_price" id="incription_price" value=0 min=0 class="col-start-1 row-start-1 w-1/6 appearance-none rounded-md bg-gray-800 py-1.5 pr-8 pl-3 text-base text-white focus:outline-indigo-500 sm:text-sm">
+                                <input type="number" name="incription_price" value="{{ old('incription_price', 0) }}" id="incription_price" value=0 min=0 class="col-start-1 row-start-1 w-1/6 appearance-none rounded-md bg-gray-800 py-1.5 pr-8 pl-3 text-base text-white focus:outline-indigo-500 sm:text-sm">
                             </div>
                         </div>
                     </div>
@@ -229,7 +230,7 @@
                             <h2 class="text-base font-semibold text-white">Número máximo de parejas</h2>
                             <p class="mt-1 text-sm text-gray-400">Indica cuantás podrá tener el torneo (mín. 4).</p>
 
-                            <input type="number" name="max_pairs" id="max_pairs" value=4 min=4 class="col-start-1 mt-4 row-start-1 w-1/6 appearance-none rounded-md bg-gray-800 py-1.5 pr-8 pl-3 text-base text-white focus:outline-indigo-500 sm:text-sm">
+                            <input type="number" name="max_pairs" value="{{ old('max_pairs', 4) }}" id="max_pairs" value=4 min=4 class="col-start-1 mt-4 row-start-1 w-1/6 appearance-none rounded-md bg-gray-800 py-1.5 pr-8 pl-3 text-base text-white focus:outline-indigo-500 sm:text-sm">
                         </div>
                     </div>
                 </div>
