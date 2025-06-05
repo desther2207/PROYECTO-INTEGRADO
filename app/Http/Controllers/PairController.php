@@ -16,7 +16,8 @@ class PairController extends Controller
     public function create(Request $request)
     {
         $tournament_id = $request->tournament_id;
-        $tournament = Tournament::findOrFail($tournament_id);
+        $tournament = Tournament::with('categories')->findOrFail($tournament_id);
+
 
         return view('pairs.create', compact('tournament'));
     }
@@ -24,7 +25,6 @@ class PairController extends Controller
 
     public function store(Request $request)
     {
-        // Convertir string a array manualmente
         $request->merge([
             'unavailable_slots' => explode(',', $request->unavailable_slots)
         ]);
@@ -44,6 +44,8 @@ class PairController extends Controller
 
         $request->validate([
             'tournament_id' => ['required', 'exists:tournaments,id'],
+            'category_ids' => ['required', 'array'],
+            'category_ids.*' => ['exists:categories,id'],
             'unavailable_slots' => ['array'],
         ]);
 
@@ -53,6 +55,12 @@ class PairController extends Controller
             'invite_code' => Str::random(32),
         ]);
 
+        // Asociar categorías
+        $pair->categories()->sync(
+            array_fill_keys($request->category_ids, ['tournament_id' => $request->tournament_id])
+        );
+        
+        // Guardar horarios no disponibles
         foreach ($request->unavailable_slots as $slotId) {
             PairUnavailableSlot::create([
                 'pair_id' => $pair->id,
@@ -66,6 +74,7 @@ class PairController extends Controller
         Mail::to($user->email)->send(new TournamentConfirmationMail($user, $tournament));
         return redirect()->route('pairs.invite', ['pair' => $pair->id])->with('success', '¡Inscripción realizada! Comparte el enlace con tu compañero.');
     }
+
 
 
     public function invite(Pair $pair)
@@ -92,6 +101,8 @@ class PairController extends Controller
             'status' => 'confirmada',
             'invite_code' => null,
         ]);
+
+        $pair->load('categories');
 
         return view('pairs.join-success', compact('pair'));
     }

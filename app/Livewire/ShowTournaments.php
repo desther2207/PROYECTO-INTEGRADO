@@ -29,6 +29,7 @@ class ShowTournaments extends Component
                     ->orWhere('description', 'like', '%' . $this->texto . '%');
             });
         }
+        
         // Filtro por estado
         if ($this->status) {
             $query->where('status', $this->status);

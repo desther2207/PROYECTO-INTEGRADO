@@ -22,7 +22,7 @@ class TournamentObserver
         } elseif ($today->between($tournament->inscription_start_date, $tournament->inscription_end_date)) {
             $tournament->status = 'inscripcion';
         } elseif ($today->between($tournament->start_date, $tournament->end_date)) {
-            $tournament->status = 'en_curso';
+            $tournament->status = 'en curso';
         } elseif ($today->gt($tournament->end_date)) {
             $tournament->status = 'finalizado';
         }

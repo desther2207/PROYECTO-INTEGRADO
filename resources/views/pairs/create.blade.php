@@ -30,6 +30,18 @@
                         Según las fechas del torneo, selecciona 7 slots que no te vengan bien para jugar.
                     </p>
 
+                    <div class="mt-6 mb-6">
+                        <label for="category_ids" class="block text-sm font-medium text-white mb-2">
+                            Selecciona una o más categorías
+                        </label>
+                        <select name="category_ids[]" id="category_ids" multiple required
+                            class="select2 w-full rounded p-2 bg-gray-800 text-white">
+                            @foreach($tournament->categories as $category)
+                            <option value="{{ $category->id }}">{{ $category->category_name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
                     <div class="calendar-grid" role="list" aria-label="Calendario de horarios disponibles">
                         @foreach ($tournament->slots as $slot)
                         <div
@@ -83,9 +95,47 @@
     .calendar-cell.selected {
         background-color: #4f46e5;
     }
+
+    .select2-container--default .select2-selection--multiple {
+        background-color: #1f2937 !important;
+        border: 1px solid #374151 !important;
+        border-radius: 0.375rem !important;
+        color: #fff !important;
+        padding: 0.375rem 0.75rem;
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        background-color: #4f46e5 !important;
+        border: none !important;
+        color: #fff !important;
+        padding: 0 1.5rem;
+        margin: 0.125rem 0.25rem 0.125rem 0;
+    }
+
+    .select2-container--default .select2-results__option {
+        background-color: #1f2937 !important;
+        color: #fff !important;
+    }
+
+    .select2-container--default .select2-results__option--highlighted {
+        background-color: #4f46e5 !important;
+        color: #fff !important;
+    }
+
+    .select2-container--default .select2-selection__rendered {
+        color: #fff !important;
+    }
 </style>
 
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        $('#category_ids').select2({
+            placeholder: "Selecciona una o más categorías",
+            width: 'resolve',
+            theme: 'default'
+        });
+    });
+
     const selectedSlots = new Set();
 
     document.querySelectorAll('.calendar-cell').forEach(cell => {

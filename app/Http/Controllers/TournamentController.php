@@ -110,10 +110,14 @@ class TournamentController extends Controller
 
         if ($request->hasFile('cartel')) {
             $validated['cartel'] = $request->file('cartel')->store('images/tournaments/carteles', 'public');
+        }else{
+            $validated['cartel'] = 'images/tournaments/carteles/default.jpg';
         }
 
         if ($request->hasFile('tournament_image')) {
             $validated['tournament_image'] = $request->file('tournament_image')->store('images/tournaments');
+        }else{
+            $validated['tournament_image'] = 'images/tournaments/default.jpeg';
         }
 
         $validated['start_date'] = $request->start_date;
@@ -374,7 +378,7 @@ class TournamentController extends Controller
         $tournament = Tournament::findOrFail($id);
         $this->authorize('delete', $tournament);
         $tournament->delete();
-        return redirect()->route('dashboard')->with('success', 'Tournament deleted successfully');
+        return redirect()->back()->with('success', 'Tournament deleted successfully');
     }
 
     public function rules()

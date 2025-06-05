@@ -10,9 +10,20 @@
             </div>
 
             <!-- Título principal del torneo -->
-            <h1 class="text-3xl font-bold mb-4 font-oswald-italic">
-                {{ strtoupper($tournament->tournament_name) }}
-            </h1>
+            <div class="flex justify-between items-center mb-4">
+                <h1 class="text-3xl font-bold font-oswald-italic">
+                    {{ strtoupper($tournament->tournament_name) }}
+                </h1>
+
+                @if (Auth::check() && (Auth::user()->role == 'editor' || Auth::user()->role == 'admin'))
+
+                <a href="{{ route('admin.pairs.index', $tournament->id) }}"
+                    class="bg-red-600 hover:bg-red-500 text-white font-semibold py-2 px-4 rounded text-sm whitespace-nowrap">
+                    Gestionar Parejas
+                </a>
+                @endif
+            </div>
+
 
             <!-- Sección principal (Información e Inscripciones) -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -43,20 +54,10 @@
                                         <p><strong>Parejas:</strong> {{ $tournament->current_pairs }}/{{ $tournament->max_pairs }}</p>
                                         <p><strong>Categorías:</strong>
                                             @foreach ($tournament->categories as $category)
-                                            @if ($category->category_name == 'Primera')
-                                            <span class="bg-yellow-800 text-yellow-100 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-yellow-600 dark:text-yellow-100">
+                                            <span class="text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm"
+                                                style="background-color: {{ $category->category_color }}; color: white;">
                                                 {{ $category->category_name }}
                                             </span>
-                                            @elseif ($category->category_name == 'Segunda')
-                                            <span class="bg-gray-300 text-gray-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-gray-300 dark:text-gray-800">
-                                                {{ $category->category_name }}
-                                            </span>
-                                            @else
-                                            <span class="bg-yellow-900 text-gray-100 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-yellow-900 dark:text-gray-100">
-                                                {{ $category->category_name }}
-                                            </span>
-                                            @endif
-
                                             @endforeach
                                         </p>
 
@@ -124,7 +125,7 @@
                                 <hr class="my-2">
                             </div>
                             <a
-                                href="#"
+                                href="{{ route('tournaments.cuadros', $tournament) }}"
                                 class="block text-center bg-green-600 text-white font-bold py-2 px-4 rounded hover:bg-green-700">
                                 Ver cuadros
                             </a>
@@ -163,6 +164,7 @@
                             </p>
                             @endif
 
+                            @if ($tournament->status != 'en curso' && (Auth::user()?->role === 'editor' || Auth::user()?->role === 'admin'))
                             <div class="mt-6">
                                 <a
                                     href="{{ route('tournaments.cuadros', $tournament) }}"
@@ -170,6 +172,7 @@
                                     Ver cuadros del torneo
                                 </a>
                             </div>
+                            @endif
                     </div>
                 </div>
             </div>

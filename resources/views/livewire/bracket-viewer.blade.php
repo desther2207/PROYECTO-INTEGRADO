@@ -170,6 +170,10 @@
                                         Guardar resultado
                                     </button>
                                     @endif
+                                    @error('sets')
+                                    <div class="text-red-500 text-sm mt-2">{{ $message }}</div>
+                                    @enderror
+
                                 </form>
 
                                 @if (auth()->user()?->isOrganizerOf($tournament) && $bgColor == 'bg-yellow-100' || auth()->user()?->role === 'admin' && $game->pair_one_id && $game->pair_two_id && $bgColor == 'bg-yellow-100')

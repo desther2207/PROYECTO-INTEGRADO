@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminPairController;
 use App\Http\Controllers\BracketController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
@@ -47,4 +48,8 @@ Route::middleware([
     Route::post('contacto/enviar', [ContactController::class, 'send'])->name('contact.send');
 
     Route::get('/ranking', [RankingController::class, 'index'])->name('ranking.index');
+
+    Route::get('/admin/torneos/{tournament}/parejas', [AdminPairController::class, 'index'])->name('admin.pairs.index');
+    Route::delete('/admin/parejas/{pair}', [AdminPairController::class, 'destroy'])->name('admin.pairs.destroy');
+    Route::delete('/admin/pair-category/{pair}/{category}', [AdminPairController::class, 'detachCategory'])->name('admin.pairs.detachCategory');
 });

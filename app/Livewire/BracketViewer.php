@@ -172,6 +172,17 @@ class BracketViewer extends Component
             ->map(fn($s) => $s['one'] . '-' . $s['two'])
             ->implode(',');
 
+        $cloneGame = clone $game;
+        $cloneGame->result = $result;
+
+        $winnerPosition = $this->determineWinner($cloneGame);
+
+        if (!$winnerPosition) {
+            $this->addError('sets', 'El resultado introducido no tiene un ganador claro. Corrígelo antes de continuar.');
+            return;
+        }
+
+
         $game->update(['result' => $result]);
 
         $winnerPosition = $this->determineWinner($game);

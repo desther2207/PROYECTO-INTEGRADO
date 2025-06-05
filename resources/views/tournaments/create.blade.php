@@ -24,7 +24,7 @@
                     <div class="border-b border-t mt-3 border-gray-700 pb-12">
                         <h2 class="text-base font-semibold text-white mt-2">Torneo</h2>
                         <p class="mt-1 text-sm text-gray-400">
-                            This information will be displayed publicly so be careful what you share.
+                            Configura tu torneo a tu gusto. Aquí puedes definir el nombre, la descripción, el cartel y el banner del torneo.
                         </p>
 
                         <!-- Grilla de 6 columnas: Izquierda (4 columnas) para Nombre y Descripción, Derecha (2 columnas) para Cartel -->
@@ -252,7 +252,9 @@
 
                 <!-- Botones de acción -->
                 <div class="mt-12 flex items-center justify-end gap-x-6">
-                    <button type="button" class="text-sm font-semibold text-gray-300">Cancel</button>
+                    <button type="button" onclick="window.history.back()" class="text-sm font-semibold text-gray-300 hover:text-white">
+                        Cancelar
+                    </button>
                     <button type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Save</button>
                 </div>
             </form>
