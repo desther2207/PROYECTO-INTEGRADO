@@ -13,6 +13,7 @@ use App\Models\Venue;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
+use Database\Seeders\RankingSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -42,6 +43,9 @@ class DatabaseSeeder extends Seeder
 
         $this->call(PairSeeder::class);
 
+        $this->call(PositionPointsSeeder::class);
+
+        $this->call(RankingSeeder::class);
 
         Bracket::factory(10)->create();
         Game::factory(10)->create();
