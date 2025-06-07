@@ -4,8 +4,8 @@
 
 ## 📌 Tabla de contenidos
 
-- [💡 Motivación](#motivación)
-- [🛠️ Tecnologías utilizadas](#tecnologías-utilizadas)
+- [-Motivación](#motivación)
+- [-Tecnologías utilizadas](#tecnologías-utilizadas)
 - [🚀 Características principales](#características-principales)
 - [🧪 Instalación](#instalación)
 - [☁️ Despliegue en AWS](#despliegue-en-aws)
