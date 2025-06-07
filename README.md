@@ -71,39 +71,39 @@ Este proyecto nace de la experiencia personal ayudando a organizar el **Primer T
 
 ## 🧪 Instalación
 
-# Clona el repositorio
+## Clona el repositorio
 ```bash
 git clone https://github.com/desther2207/PROYECTO-INTEGRADO.git
 ```
-# Entra al proyecto
+## Entra al proyecto
 ```bash
 cd PROYECTO-INTEGRADO
 ```
-# Instala dependencias backend
+## Instala dependencias backend
 ```bash
 composer install
 ```
-# Copia el archivo .env
+## Copia el archivo .env
 ```bash
 cp .env.example .env
 ```
-# Configura tus variables de entorno en .env
+### Configura tus variables de entorno en .env
 
-# Genera la key de la aplicación
+## Genera la key de la aplicación
 ```bash
 php artisan key:generate
 ```
-# Instala dependencias frontend
+## Instala dependencias frontend
 ```bash
 npm install && npm run build
 ```
-# Ejecuta las migraciones
+## Ejecuta las migraciones
 ```bash
 php artisan migrate --seed
 ```
-# NOTA IMPORTANTE: --seed creará torneos que no son funcionales, ya que no se crean con todo lo necesario para cubrir toda la funcionalidad, por lo que se debe crear los torneos a mano para disfrutar de la funcionalidad completa del proyecto
+## NOTA IMPORTANTE: --seed creará torneos que no son funcionales, ya que no se crean con todo lo necesario para cubrir toda la funcionalidad, por lo que se debe crear los torneos a mano para disfrutar de la funcionalidad completa del proyecto
 
-# Inicia el servidor
+## Inicia el servidor
 ```bash
 php artisan serve
 ```
