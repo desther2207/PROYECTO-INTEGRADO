@@ -4,13 +4,13 @@
 
 ## 📌 Tabla de contenidos
 
-- [-Motivación](#motivación)
-- [-Tecnologías utilizadas](#tecnologías-utilizadas)
-- [🚀 Características principales](#características-principales)
-- [🧪 Instalación](#instalación)
-- [☁️ Despliegue en AWS](#despliegue-en-aws)
-- [⚠️ Dificultades encontradas](#dificultades-encontradas)
-- [✅ Conclusiones](#conclusiones)
+- [💡 Motivación](#-motivación)
+- [🛠️ Tecnologías utilizadas](#-tecnologías-utilizadas)
+- [🚀 Características principales](#-características-principales)
+- [🧪 Instalación](#-instalación)
+- [☁️ Despliegue en AWS](#-despliegue-en-aws)
+- [⚠️ Dificultades encontradas](#-dificultades-encontradas)
+- [✅ Conclusiones](#-conclusiones)
 
 ---
 
