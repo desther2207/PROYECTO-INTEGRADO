@@ -238,12 +238,6 @@
 
                     <!-- Jugadores y categorias -->
                     <div class="flex flex-col sm:flex-row gap-4 border-b border-gray-700 pb-12">
-                        <div class="flex-1">
-                            <h2 class="text-base font-semibold text-white">Número de categorías</h2>
-                            <p class="mt-1 text-sm text-gray-400">Indica cuántas categorías estarán disponibles (máx. 3)</p>
-
-                            <input type="number" name="max_categories" id="max_categories" value="{{ old('max_categories', $tournament->categories()->count()) }}" max=3 class="col-start-1 mt-4 row-start-1 w-1/6 appearance-none rounded-md bg-gray-800 py-1.5 pr-8 pl-3 text-base text-white focus:outline-indigo-500 sm:text-sm">
-                        </div>
 
                         <div class="flex-1">
                             <h2 class="text-base font-semibold text-white">Número máximo de parejas</h2>

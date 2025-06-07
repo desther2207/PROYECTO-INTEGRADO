@@ -48,6 +48,22 @@
             top: 0;
             background-color: transparent;
         }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50%);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide-up {
+            animation: slideUp 0.4s ease-out forwards;
+        }
     </style>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -77,12 +93,13 @@
 
                 <!-- Menú de navegación -->
                 <nav id="nav-menu" aria-label="Menu principal"
-                    class="hidden md:flex flex-col md:flex-row gap-y-3 md:gap-y-0 md:gap-x-6 items-start md:items-center absolute md:static top-20 left-0 w-full md:w-auto bg-black bg-opacity-90 md:bg-transparent px-6 py-4 md:p-0">
+                    class="hidden slide-up flex-col md:flex md:flex-row gap-6 md:gap-x-6 absolute md:static top-20 left-0 w-full md:w-auto bg-black bg-opacity-90 md:bg-transparent px-6 py-6 md:p-0 z-40 text-white">
 
-                    <a href="{{ route('dashboard') }}" class="hover:text-indigo-300" aria-current="page">Inicio</a>
-                    <a href="{{ route('tournaments') }}" class="hover:text-indigo-300">Torneos</a>
-                    <a href="{{ route('ranking.index') }}" class="hover:text-indigo-300">Ranking</a>
-                    <a href="{{ route('contacto.index') }}" class="hover:text-indigo-300">Contacto</a>
+
+                    <a href="{{ route('dashboard') }}" class="hover:text-indigo-300 mr-2" aria-current="page">Inicio</a>
+                    <a href="{{ route('tournaments') }}" class="hover:text-indigo-300 mr-2">Torneos</a>
+                    <a href="{{ route('ranking.index') }}" class="hover:text-indigo-300 mr-2">Ranking</a>
+                    <a href="{{ route('contacto.index') }}" class="hover:text-indigo-300 mr-2">Contacto</a>
 
                     @if (Route::has('login'))
                     @auth
@@ -90,10 +107,10 @@
                         class="px-4 py-2 border rounded text-sm hover-button mt-2 md:mt-0">Mi perfil</a>
                     @else
                     <a href="{{ route('login') }}"
-                        class="px-4 py-2 border rounded text-sm hover-button mt-2 md:mt-0">Inicia sesión</a>
+                        class="block md:inline px-4 py-2 border rounded text-sm hover-button mt-2 md:mt-0 text-center">Inicia sesión</a>
                     @if (Route::has('register'))
                     <a href="{{ route('register') }}"
-                        class="px-4 py-2 border rounded text-sm hover-button mt-2 md:mt-0">Regístrate</a>
+                        class="block md:inline px-4 py-2 border rounded text-sm hover-button mt-2 md:mt-0 text-center">Regístrate</a>
                     @endif
                     @endauth
                     @endif

@@ -39,10 +39,32 @@
                         <div class="flex flex-col md:flex-row mt-2">
                             <!-- Columna de la imagen -->
                             <div class="md:w-1/3 flex items-center">
-                                <img
-                                    src="{{ Storage::url($tournament->cartel) }}"
-                                    alt="Cartel del torneo"
-                                    class="rounded max-h-64">
+                                <div x-data="{ open: false }" class="relative w-full">
+                                    <!-- Imagen pequeña (cartel) -->
+                                    <img
+                                        src="{{ Storage::url($tournament->cartel) }}"
+                                        alt="Cartel del torneo"
+                                        class="rounded max-h-64 cursor-pointer mx-auto"
+                                        @click="open = true">
+
+                                    <!-- Modal: fondo + imagen grande -->
+                                    <div
+                                        x-show="open"
+                                        x-transition
+                                        class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70"
+                                        x-cloak
+                                        @keydown.escape.window="open = false">
+                                        <!-- Área que cierra al hacer clic fuera de la imagen -->
+                                        <div class="absolute inset-0" @click="open = false"></div>
+
+                                        <!-- Imagen grande encima -->
+                                        <img
+                                            src="{{ Storage::url($tournament->cartel) }}"
+                                            alt="Cartel ampliado"
+                                            class="relative z-10 max-w-full max-h-[90vh] rounded shadow-lg">
+                                    </div>
+                                </div>
+
                             </div>
 
                             <!-- Columna de información -->
@@ -51,7 +73,7 @@
                                     <div>
                                         <p><strong>Nivel:</strong> {{ ucfirst($tournament->level) }}</p>
                                         <p><strong>Estado:</strong> {{ ucfirst($tournament->status) }}</p>
-                                        <p><strong>Parejas:</strong> {{ $tournament->current_pairs }}/{{ $tournament->max_pairs }}</p>
+                                        <p><strong>Parejas:</strong> {{ $tournament->current_pairs }}</p>
                                         <p><strong>Categorías:</strong>
                                             @foreach ($tournament->categories as $category)
                                             <span class="text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm"
@@ -140,7 +162,6 @@
                                 Torneo finalizado
                             </div>
                             @else
-                            <!-- Estado pendiente -->
                             <!-- Inscripciones abiertas -->
                             <h2 class="text-xl font-semibold mb-2">Inscripciones</h2>
                             <div class="-mx-4">

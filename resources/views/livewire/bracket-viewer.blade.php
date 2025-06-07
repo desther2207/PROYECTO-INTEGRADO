@@ -7,6 +7,13 @@
     </div>
     @endif
 
+    {{-- MENSAJE DE ADVERTENCIA --}}
+    @if (session('warning'))
+    <div class="bg-yellow-200 text-yellow-900 font-semibold px-4 py-2 rounded mb-4">
+        {{ session('warning') }}
+    </div>
+    @endif
+
     {{-- SELECTOR DE CUADROS --}}
     <div class="flex flex-col sm:flex-row sm:flex-wrap sm:gap-3 gap-2 mb-6">
         @foreach ($tournament->categories as $category)

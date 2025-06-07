@@ -15,8 +15,12 @@ class BracketController extends Controller
             return redirect()->back()->with('error', 'Los partidos ya fueron generados.');
         }
 
-        $bracket->generateGames(); // --> Así se llama al método del modelo
+        $success = $bracket->generateGames();
 
-        return redirect()->back()->with('success', 'Partidos generados correctamente.');
+        if ($success) {
+            return redirect()->back()->with('success', '✅ Partidos generados automáticamente.');
+        } else {
+            return redirect()->back()->with('warning', '⚠️ No se han generado partidos: se necesitan al menos 3 parejas.');
+        }
     }
 }

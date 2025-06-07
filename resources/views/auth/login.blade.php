@@ -3,30 +3,63 @@
     <div class="min-h-screen flex flex-col bg-gray-900 overflow-hidden">
 
         <!-- Navbar -->
-        <header class="w-full p-6 bg-gray-900">
-            <div class="container mx-auto flex justify-end items-center gap-6">
-                <nav class="flex gap-6">
-                    <a href="{{ url('/') }}" class="text-white hover:text-gray-300">Inicio</a>
-                    <a href="#" class="text-white hover:text-gray-300">Torneos</a>
-                    <a href="#" class="text-white hover:text-gray-300">Resultados</a>
-                    <a href="#" class="text-white hover:text-gray-300">Contacto</a>
-                </nav>
-                <div class="flex gap-4">
+        <header class="w-full p-4 bg-gray-900 text-white">
+            <div class="container mx-auto flex justify-between items-center">
+                <!-- Logo opcional -->
+                <a href="{{ url('/') }}" class="text-lg font-bold">e3Padel</a>
+
+                <!-- Botón hamburguesa -->
+                <button id="menu-toggle" class="md:hidden text-white focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+
+                <!-- Menú de navegación -->
+                <nav id="mobile-menu"
+                    class="hidden slide-up md:flex flex-col md:flex-row gap-4 md:gap-6 absolute md:static top-20 left-0 w-full md:w-auto bg-gray-900 md:bg-transparent px-6 py-4 md:p-0 z-40 text-white">
+                    <a href="{{ url('/') }}" class="hover:text-gray-300">Inicio</a>
+                    <a href="{{ route('tournaments') }}" class="hover:text-gray-300 mr-3">Torneos</a>
+                    <a href="{{ route('ranking.index') }}" class="hover:text-gray-300 mr-3">Ranking</a>
+                    <a href="{{ route('contacto.index') }}" class="hover:text-gray-300 mr-3">Contacto</a>
+
                     @if (Route::has('login'))
-                    <nav class="flex items-center gap-4">
-                        @auth
-                        <a href="{{ url('/dashboard') }}" class="px-4 py-2 border rounded text-sm text-white hover:bg-white hover:text-black">Inicio</a>
-                        @else
-                        <a href="{{ route('login') }}" class="px-4 py-2 border rounded text-sm text-white hover:bg-white hover:text-black">Inicia sesión</a>
-                        @if (Route::has('register'))
-                        <a href="{{ route('register') }}" class="px-4 py-2 border rounded text-sm text-white hover:bg-white hover:text-black">Regístrate</a>
-                        @endif
-                        @endauth
-                    </nav>
+                    @auth
+                    <a href="{{ url('/dashboard') }}"
+                        class="px-4 py-2 border rounded text-sm hover:bg-white hover:text-black">Inicio</a>
+                    @else
+                    <a href="{{ route('login') }}"
+                        class="block md:inline px-4 py-2 border rounded text-sm hover:bg-white hover:text-black text-center">Inicia
+                        sesión</a>
+                    @if (Route::has('register'))
+                    <a href="{{ route('register') }}"
+                        class="block md:inline px-4 py-2 border rounded text-sm hover:bg-white hover:text-black text-center">Regístrate</a>
                     @endif
-                </div>
+                    @endauth
+                    @endif
+                </nav>
             </div>
+
+            <!-- Script toggle -->
+            <script>
+                const toggle = document.getElementById('menu-toggle');
+                const menu = document.getElementById('mobile-menu');
+
+                toggle.addEventListener('click', () => {
+                    menu.classList.toggle('hidden');
+                });
+
+                // Cierra el menú al hacer clic en un enlace
+                document.querySelectorAll('#mobile-menu a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        menu.classList.add('hidden');
+                    });
+                });
+            </script>
         </header>
+
 
         <!-- Cuerpo dividido -->
         <div class="flex flex-col md:flex-row flex-1">
@@ -91,3 +124,20 @@
         </div>
     </div>
 </x-guest-layout>
+<style>
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(50%);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .slide-up {
+        animation: slideUp 0.4s ease-out forwards;
+    }
+</style>

@@ -94,6 +94,7 @@ class Bracket extends Model
                 $end = null;
 
                 if ($currentRound === $totalRounds && $pairOneId && $pairTwoId) {
+                    
                     $bestSlot = null;
                     $minConflicts = PHP_INT_MAX;
 
@@ -110,7 +111,7 @@ class Bracket extends Model
                             $conflicts = 0;
 
                             foreach ([$pairOneId, $pairTwoId] as $pid) {
-                                $conflicts += \App\Models\PairUnavailableSlot::where('pair_id', $pid)
+                                $conflicts += PairUnavailableSlot::where('pair_id', $pid)
                                     ->whereHas('tournamentSlot', fn($q) =>
                                     $q->where('slot_date', $slotDate)
                                         ->where('start_time', $startTime))
@@ -167,5 +168,6 @@ class Bracket extends Model
             $currentPairs = $nextRoundPairs;
             $currentRound--;
         }
+        return true;
     }
 }

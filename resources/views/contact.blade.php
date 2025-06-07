@@ -8,7 +8,7 @@
     <div class="min-h-screen flex flex-col md:flex-row" role="main" aria-labelledby="contact-title">
         <!-- Lado amarillo -->
         <div class="relative w-full md:w-1/2 bg-[#b4cb2d] flex justify-around items-center py-12 overflow-hidden" role="region" aria-labelledby="info-contacto">
-            <div class="text-center px-6">
+            <div class="text-center px-6 z-10">
                 <h1 id="info-contacto" class="text-white font-bold text-4xl">Contáctanos</h1>
                 <p class="text-white mt-2">¿Tienes dudas o sugerencias? ¿Quieres trabajar con nosotros? <br>Estamos aquí para ayudarte.</p>
                 <a href="{{ route('dashboard') }}" aria-label="Volver al inicio"
