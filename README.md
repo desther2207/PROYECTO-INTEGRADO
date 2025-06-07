@@ -4,14 +4,13 @@
 
 ## 📌 Tabla de contenidos
 
-- [Motivación](#motivación)
-- [Tecnologías utilizadas](#tecnologías-utilizadas)
-- [Características principales](#características-principales)
-- [Instalación](#instalación)
-- [Capturas de pantalla](#capturas-de-pantalla)
-- [Despliegue en AWS](#despliegue-en-aws)
-- [Dificultades encontradas](#dificultades-encontradas)
-- [Conclusiones](#conclusiones)
+- [💡 Motivación](#motivación)
+- [🛠️ Tecnologías utilizadas](#tecnologías-utilizadas)
+- [🚀 Características principales](#características-principales)
+- [🧪 Instalación](#instalación)
+- [☁️ Despliegue en AWS](#despliegue-en-aws)
+- [⚠️ Dificultades encontradas](#dificultades-encontradas)
+- [✅ Conclusiones](#conclusiones)
 
 ---
 
@@ -107,3 +106,31 @@ php artisan migrate --seed
 ```bash
 php artisan serve
 ```
+
+## ☁️ Despliegue en AWS
+
+El proyecto ha sido desplegado en una instancia **EC2 de Ubuntu**. Se utilizaron servicios como **Apache**, **MySQL**, **Composer** y **Laravel**.
+
+### Pasos principales:
+
+1. Crear instancia EC2
+2. Configurar Apache y permisos
+3. Clonar el proyecto en `/home/ubuntu/`
+4. Configurar `.env`, ejecutar migraciones y compilar frontend
+5. Modificar el `DocumentRoot` y permisos
+
+---
+
+## ⚠️ Dificultades encontradas
+
+- **Manejo de fechas**: Tuve que separar rangos seleccionados por *FlatPickr* para almacenarlos correctamente en dos campos distintos.
+- **Diseño de base de datos**: Hubo múltiples cambios durante el desarrollo para adaptar la estructura a nuevas funcionalidades.
+
+---
+
+## ✅ Conclusiones
+
+A pesar del estrés en algunos momentos, estoy satisfecho con el resultado. Si continuara con el proyecto, exploraría la opción de usar **Laravel como API REST** y un frontend en **Vue o React** para mayor dinamismo.
+
+Este proyecto no solo me ha servido para aprender, sino que espero poder usarlo en un futuro para ayudar a mi padre a organizar torneos.
+
