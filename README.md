@@ -1,66 +1,109 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🎾 Square Pádel
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**Square Pádel** es una plataforma web para la gestión y organización de torneos de pádel, pensada para facilitar el trabajo de los organizadores y mejorar la experiencia de los jugadores. El sistema automatiza la generación de partidos teniendo en cuenta horarios disponibles, pistas y más.
 
-## About Laravel
+## 📌 Tabla de contenidos
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- [Motivación](#motivación)
+- [Tecnologías utilizadas](#tecnologías-utilizadas)
+- [Características principales](#características-principales)
+- [Instalación](#instalación)
+- [Capturas de pantalla](#capturas-de-pantalla)
+- [Despliegue en AWS](#despliegue-en-aws)
+- [Dificultades encontradas](#dificultades-encontradas)
+- [Conclusiones](#conclusiones)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 💡 Motivación
 
-## Learning Laravel
+Este proyecto nace de la experiencia personal ayudando a organizar el **Primer Torneo de Pádel de la Mancomunidad del Bajo Andarax**. El objetivo era automatizar al máximo la gestión de torneos: emparejamientos, asignación de horarios y pistas, cuadro de partidos, etc.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## 🛠️ Tecnologías utilizadas
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- **Laravel 12** – Backend y sistema de autenticación
+- **Livewire** – Componentes reactivos en tiempo real
+- **Blade** – Motor de plantillas de Laravel
+- **MySQL** – Base de datos (gestionada desde DBeaver)
+- **Tailwind CSS** – Estilos modernos y responsive
+- **FlatPickr** – Selección de fechas en español
+- **Select2** – Selects con búsqueda y selección múltiple en formularios
+- **JavaScript** – Funcionalidades dinámicas en el sistema
+- **SweetAlert2** – Notificaciones bonitas
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## 🚀 Características principales
 
-### Premium Partners
+### 🔐 Autenticación y roles
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+- Registro e inicio de sesión
+- Control de acceso por roles: **usuario**, **editores (organizadores)**, **admin**
 
-## Contributing
+### 🏆 Gestión de torneos
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- Crear torneos con categorías, sedes y fechas
+- Generación automática de cuadros de partidos
+- Inscripción por parejas mediante enlace de invitación
+- Emparejamiento automático editable por administradores u organizadores
 
-## Code of Conduct
+### 📅 Asignación inteligente de partidos
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- Los partidos se asignan en función de:
+  - Horarios NO disponibles de las parejas (elegidos en el momento de inscripción)
+  - Pistas disponibles en las sedes
+  - Tiempo de descanso mínimo entre partidos
 
-## Security Vulnerabilities
+### 🎮 Visualización de cuadros
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- Vista editable por organizadores
+- Resultados introducibles desde la interfaz
+- Avance automático de rondas y cuadro de consolación
 
-## License
+### 📈 Otras funcionalidades
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- Vista de ranking de jugadores con estadísticas básicas
+- Formulario de contacto para clubs
+
+---
+
+## 🧪 Instalación
+
+```bash
+# Clona el repositorio
+git clone https://github.com/desther2207/PROYECTO-INTEGRADO.git
+```
+```bash
+# Entra al proyecto
+cd PROYECTO-INTEGRADO
+```
+```bash
+# Instala dependencias backend
+composer install
+```
+```bash
+# Copia el archivo .env
+cp .env.example .env
+```
+# Configura tus variables de entorno en .env
+
+```bash
+# Genera la key de la aplicación
+php artisan key:generate
+```
+```bash
+# Instala dependencias frontend
+npm install && npm run build
+```
+```bash
+# Ejecuta las migraciones
+php artisan migrate --seed
+```
+# NOTA IMPORTANTE: --seed creará torneos que no son funcionales, ya que no se crean con todo lo necesario para cubrir toda la funcionalidad, por lo que se debe crear los torneos a mano para disfrutar de la funcionalidad completa del proyecto
+
+```bash
+# Inicia el servidor
+php artisan serve
+```
