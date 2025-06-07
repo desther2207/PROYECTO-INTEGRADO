@@ -88,10 +88,6 @@ cp .env.example .env
 ```
 ### Configura tus variables de entorno en .env
 
-## Genera la key de la aplicación
-```bash
-php artisan key:generate
-```
 ## Instala dependencias frontend
 ```bash
 npm install && npm run build
